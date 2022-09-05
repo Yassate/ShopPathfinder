@@ -42,7 +42,7 @@ def salesman_solution(cities):
                 shortest = dist
                 nearest_p = cities[j]
         cities.remove(nearest_p)
-        cities.insert(i+1, nearest_p)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Yassate/ShopPathfinder.git
+        cities.insert(i+1, nearest_p)
         pygame.time.wait(200)
         draw_window()
         #print(cities)
