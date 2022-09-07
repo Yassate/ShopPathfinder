@@ -1,7 +1,7 @@
 from os import environ
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 import pygame
-from AStar import AreaGrid
+from AStar import AreaGrid, generate_obstacles
 
 def draw_cities(cities):
     for city in cities:
@@ -23,6 +23,7 @@ cities = []
 gridsize = 10
 
 mygrid = AreaGrid(win=WIN, size=gridsize, wh_pix=(WIDTH, HEIGHT), obstacles=[(5,5), (5,6), (5,7), (6,5), (7,5)])
+mygrid.add_obstacles_from_grid(generate_obstacles(gridsize, obstacle_size=(1,3)))
 mygrid.set_start((1,1))
 mygrid.set_end((6,6))
 

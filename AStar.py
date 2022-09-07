@@ -8,9 +8,12 @@ from pathfinding.finder.a_star import AStarFinder
 def generate_obstacles(gridsize, obstacle_size=(30, 80)):
     internal_grid = np.ones((gridsize,gridsize), dtype=np.int8)
     for i in range(3):
-        start_x = random.randint(max(obstacle_size), gridsize-max(obstacle_size))
-        start_y = random.randint(max(obstacle_size), gridsize-max(obstacle_size))
-        internal_grid[start_x:start_x+obstacle_size[0], start_y+obstacle_size[1]] = 0
+        start_x = random.randint(max(obstacle_size), gridsize-max(obstacle_size)-1)
+        start_y = random.randint(max(obstacle_size), gridsize-max(obstacle_size)-1)
+        size_x = obstacle_size[(x_i:=random.randint(0,1))]
+        size_y = obstacle_size[abs(x_i-1)]
+        print((start_x, start_y))
+        internal_grid[start_x:start_x+size_x, start_y:start_y+size_y] = 0
     return internal_grid
 
 class AreaGrid:
@@ -43,6 +46,10 @@ class AreaGrid:
     def add_obstacles(self):
         for obstacle in self._obstacles:
             self._grid.itemset(obstacle, 0)
+
+    def add_obstacles_from_grid(self, obst_grid):
+        # TODO LOOKS like it's working, but pathplanner ignores it
+        self._grid = np.multiply(self._grid, obst_grid)
     
     def draw(self):
         for x, col in enumerate(self._grid):
