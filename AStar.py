@@ -12,7 +12,6 @@ def generate_obstacles(gridsize, obstacle_size=(30, 80)):
         start_y = random.randint(max(obstacle_size), gridsize-max(obstacle_size)-1)
         size_x = obstacle_size[(x_i:=random.randint(0,1))]
         size_y = obstacle_size[abs(x_i-1)]
-        print((start_x, start_y))
         internal_grid[start_x:start_x+size_x, start_y:start_y+size_y] = 0
     return internal_grid
 
@@ -37,7 +36,7 @@ class AreaGrid:
 
     def set_start(self, start):
         self._start = start
-        self._grid.itemset(start, -2)
+        self._grid.itemset(start, 2)
 
     def set_end(self, end):
         self._end = end
@@ -48,18 +47,30 @@ class AreaGrid:
             self._grid.itemset(obstacle, 0)
 
     def add_obstacles_from_grid(self, obst_grid):
-        # TODO LOOKS like it's working, but pathplanner ignores it
+        # TODO LOOKS like it's working, but pathplanner ignores some of grid 0 elements
         self._grid = np.multiply(self._grid, obst_grid)
-    
+
+
+    def print_grid(self):
+        print(type(self._grid))
+        print(self._grid)
+
     def draw(self):
-        for x, col in enumerate(self._grid):
-            for y, row in enumerate(col):
+        # for x, col in enumerate(self._grid):
+        #     for y, row in enumerate(col):
+        #         pygame.draw.rect(self._win, self._color[abs(row)], pygame.Rect(x*(self.el_w_pix+self.spacing), y*(self.el_h_pix+self.spacing), self.el_w_pix, self.el_h_pix))    
+        #         #pygame.display.update()
+        for y, col in enumerate(self._grid):
+            for x, row in enumerate(col):
                 pygame.draw.rect(self._win, self._color[abs(row)], pygame.Rect(x*(self.el_w_pix+self.spacing), y*(self.el_h_pix+self.spacing), self.el_w_pix, self.el_h_pix))    
                 #pygame.display.update()
 
     def add_path(self, path):
+        #self.print_grid()
         for step in path:
-            self._grid.itemset(step, -2)
+            self._grid.itemset((step[1], step[0]), -2)
+        #self.print_grid()
+
 
     def solve_path(self):
         grid = Grid(matrix=self._grid)
@@ -67,5 +78,7 @@ class AreaGrid:
         end = grid.node(*self._end)
         finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
         path, runs = finder.find_path(start, end, grid)
+        print(grid.grid_str())
         self.add_path(path)
+        print(grid.grid_str())
 
