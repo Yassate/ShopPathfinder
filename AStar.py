@@ -25,7 +25,7 @@ class AreaGrid:
         self._win = win
         self._grid = np.ones((size,size), dtype=np.int8)
         self._obstacles = obstacles
-        self.add_obstacles()
+        #self.add_obstacles()
         self.size = size
         self.w_pix = wh_pix[0]
         self.h_pix = wh_pix[1]
@@ -35,11 +35,11 @@ class AreaGrid:
         self.spacing=spacing
 
     def set_start(self, start):
-        self._start = start
+        self._start = (start[1], start[0])
         self._grid.itemset(start, 2)
 
     def set_end(self, end):
-        self._end = end
+        self._end = (end[1], end[0])
         self._grid.itemset(end, 2)
 
     def add_obstacles(self):
