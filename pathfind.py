@@ -24,10 +24,12 @@ gridsize = 10
 
 
 def main():
-    mygrid = AreaGrid(win=WIN, size=gridsize, wh_pix=(WIDTH, HEIGHT), obstacles=[(5,5), (5,6), (5,7), (5,8), (6,5), (7,5), (8,5)])
-    mygrid.add_obstacles_from_grid(generate_obstacles(gridsize, obstacle_size=(1,3)))
+    mygrid = AreaGrid(win=WIN, size=gridsize, wh_pix=(WIDTH, HEIGHT))
+    obstacles = generate_obstacles(gridsize, obstacle_size=(1,3))
+    #print(obstacles)
+    mygrid.add_obstacles_from_grid(obstacles)
     mygrid.set_start((1,2))
-    mygrid.set_end((6,7))
+    mygrid.set_end((6,8))
 
 
     clock = pygame.time.Clock()
