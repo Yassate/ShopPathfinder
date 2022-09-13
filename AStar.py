@@ -5,8 +5,6 @@ from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
 
-# TODO WHY SET ITEMS LOOKS LIKE COORDS ARE YX not XY?
-
 def generate_obstacles(gridsize, obstacle_size=(30, 80)):
     internal_grid = np.ones((gridsize,gridsize), dtype=np.int8)
     for i in range(3):
@@ -24,7 +22,7 @@ class AreaGrid:
     _color = [BLACK, RED, GREEN] 
 
     def __init__(self, win=[], size=10, wh_pix=(500, 500),cover=0.9, spacing=1):
-        self._win = win
+        self._window = win
         self._grid = np.ones((size,size), dtype=np.int8)
         self.size = size
         self.w_pix = wh_pix[0]
@@ -32,6 +30,7 @@ class AreaGrid:
         self.el_w_pix = np.floor(self.w_pix*cover/size)-spacing
         self.el_h_pix = np.floor(self.h_pix*cover/size)-spacing
         self.spacing=spacing
+        self._path = []
 
     def set_start(self, start):
         self._start = start
@@ -40,28 +39,19 @@ class AreaGrid:
     def set_end(self, end):
         self._end = end
         self._grid.itemset(end, 2)
-        print("AFTER SET END")
-        print(self._grid)
 
     def add_obstacles_from_grid(self, obst_grid):
         self._grid = np.multiply(self._grid, obst_grid)
 
-    def print_grid(self):
-        print(self._grid.transpose())
-
     def draw(self):
         for y, col in enumerate(self._grid):
             for x, row in enumerate(col):
-                pygame.draw.rect(self._win, self._color[abs(row)], pygame.Rect(x*(self.el_w_pix+self.spacing), y*(self.el_h_pix+self.spacing), self.el_w_pix, self.el_h_pix))    
-                # pygame.display.update()
-                # pygame.time.delay(10)
+                pygame.draw.rect(self._window, self._color[abs(row)], pygame.Rect(x*(self.el_w_pix+self.spacing), y*(self.el_h_pix+self.spacing), self.el_w_pix, self.el_h_pix))    
 
-    def add_path(self, path):
-        #self.print_grid()
+    def set_path(self, path):
         for step in path:
-            self._grid.itemset(step[::-1], -2)
-        #self.print_grid()
-
+            self._path.append(row_col_step:=step[::-1])
+            self._grid.itemset(row_col_step, -2)
 
     def solve_path(self):
         grid = Grid(matrix=self._grid)
@@ -69,7 +59,4 @@ class AreaGrid:
         end = grid.node(*self._end[::-1])
         finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
         path, runs = finder.find_path(start, end, grid)
-        #print(grid.grid_str())
-        self.add_path(path)
-        #print(grid.grid_str())
-
+        self.set_path(path)

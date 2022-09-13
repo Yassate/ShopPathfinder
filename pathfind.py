@@ -26,7 +26,6 @@ gridsize = 10
 def main():
     mygrid = AreaGrid(win=WIN, size=gridsize, wh_pix=(WIDTH, HEIGHT))
     obstacles = generate_obstacles(gridsize, obstacle_size=(1,3))
-    #print(obstacles)
     mygrid.add_obstacles_from_grid(obstacles)
     mygrid.set_start((1,2))
     mygrid.set_end((6,8))
@@ -34,7 +33,6 @@ def main():
 
     clock = pygame.time.Clock()
     run = True
-    #mygrid.print_grid()
     draw_window(mygrid)
     pygame.time.wait(2000)
     mygrid.solve_path()
