@@ -5,9 +5,11 @@ from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
 
-def generate_obstacles(gridsize, obstacle_size=(30, 80)):
+#TODO Purpose of this class -> to be a service that gives you back a path between the points. No more probably
+
+def generate_obstacles(gridsize, obstacle_size=(30, 80), count=3):
     internal_grid = np.ones((gridsize,gridsize), dtype=np.int8)
-    for i in range(3):
+    for i in range(count):
         start_x = random.randint(max(obstacle_size), gridsize-max(obstacle_size)-1)
         start_y = random.randint(max(obstacle_size), gridsize-max(obstacle_size)-1)
         size_x = obstacle_size[(x_i:=random.randint(0,1))]
@@ -16,21 +18,28 @@ def generate_obstacles(gridsize, obstacle_size=(30, 80)):
     return internal_grid
 
 class AreaGrid:
-    RED = (255, 30, 70)
+    RED   = (255, 30, 70)
     BLACK = (0, 0, 0)
-    GREEN = (0,168,107)
-    _color = [BLACK, RED, GREEN] 
+    GREEN = (0, 168, 107)
+    WHITE = (255, 255, 255)
+    LGRAY = (180, 180, 180)
+    GRAY  = (128, 128, 128)
+    DGRAY = (100, 100, 100)
+    _color = [DGRAY, LGRAY, GREEN] 
 
-    def __init__(self, win=[], size=10, wh_pix=(500, 500),cover=0.9, spacing=1):
+    def __init__(self, win=[], size=10, wh_pix=(500, 500),cover=1, spacing=1):
         self._window = win
-        self._grid = np.ones((size,size), dtype=np.int8)
         self.size = size
+        self.reset_grid()
         self.w_pix = wh_pix[0]
         self.h_pix = wh_pix[1]
         self.el_w_pix = np.floor(self.w_pix*cover/size)-spacing
         self.el_h_pix = np.floor(self.h_pix*cover/size)-spacing
         self.spacing=spacing
         self._path = []
+
+    def reset_grid(self):
+        self._grid = np.ones((self.size, self.size), dtype=np.int8)
 
     def set_start(self, start):
         self._start = start

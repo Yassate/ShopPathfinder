@@ -8,27 +8,26 @@ def draw_cities(cities):
         pygame.draw.circle(surface=WIN, color=(255,0,0), center=city, radius=5)
 
 def draw_window(mygrid):
-    WIN.fill(WHITE)
+    WIN.fill(LGRAY)
     mygrid.draw()
     pygame.display.update()
 
-WIDTH, HEIGHT = 800, 800
+WIDTH, HEIGHT = 900, 900
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 WHITE = (255, 255, 255)
-
+LGRAY = (180, 180, 180)
 FPS = 60
+
 cities_count = 2
 cities = []
-
-gridsize = 10
-
+gridsize = 200
 
 def main():
     mygrid = AreaGrid(win=WIN, size=gridsize, wh_pix=(WIDTH, HEIGHT))
-    obstacles = generate_obstacles(gridsize, obstacle_size=(1,3))
+    obstacles = generate_obstacles(gridsize, obstacle_size=(round(gridsize/15),round(gridsize/8)), count=(min(40, gridsize)))
     mygrid.add_obstacles_from_grid(obstacles)
-    mygrid.set_start((1,2))
-    mygrid.set_end((6,8))
+    mygrid.set_start((round(gridsize/10), round(gridsize/10)))
+    mygrid.set_end((round(gridsize*9/10), round(gridsize*9/10)))
 
 
     clock = pygame.time.Clock()
