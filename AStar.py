@@ -69,3 +69,11 @@ class AreaGrid:
         finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
         path, runs = finder.find_path(start, end, grid)
         self.set_path(path)
+
+    def get_solution(self):
+        grid = Grid(matrix=self._grid)
+        start = grid.node(*self._start[::-1])
+        end = grid.node(*self._end[::-1])
+        finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
+        path, runs = finder.find_path(start, end, grid)
+        return path
