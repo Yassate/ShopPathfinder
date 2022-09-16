@@ -5,8 +5,6 @@ from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
 
-#TODO Purpose of this class -> to be a service that gives you back a path between the points. No more probably
-
 def generate_obstacles(gridsize, obstacle_size=(30, 80), count=3):
     internal_grid = np.ones((gridsize,gridsize), dtype=np.int8)
     for i in range(count):

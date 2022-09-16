@@ -33,7 +33,7 @@ def main():
 
 
     #TODO STEP1 - Generate random cities as list of tuples or dataclasses - DONE
-    #TODO STEP1.1 - Cities should be located somewhere on the borders, maybe 5 with fixed low X value and 5 with fixed high X value
+    #TODO STEP1.1 - Cities should be located somewhere on the borders
     #TODO STEP2 - Feed AStar solver with city pairs (round-robin), result for each pair 
     #             should be dataclass "Path", with 2 cities inside and path as a list of tuples; store paths in list
     #TODO STEP3 - find a way for searching in the list for the path between given cities; it should be our distance calculation function
@@ -44,7 +44,6 @@ def main():
 
     for i in range(int(cities_count/2)):
         cities.append(City(int(gridsize*0.05), random.randint(1, gridsize)))
-    for j in range(int(cities_count/2)):
         cities.append(City(int(gridsize*0.95), random.randint(1, gridsize)))
 
     print(cities)
@@ -56,8 +55,8 @@ def main():
         mygrid.reset_grid()
         mygrid.add_obstacles_from_grid(obstacles)
         print(i)
-        mygrid.set_start((cities[i].x, cities[i].y))
-        mygrid.set_end((cities[i+1].x, cities[i+1].y))
+        mygrid.set_start((cities[i].y, cities[i].x))
+        mygrid.set_end((cities[i+1].y, cities[i+1].x))
         draw_window(mygrid)
         mygrid.solve_path()
         draw_window(mygrid)
