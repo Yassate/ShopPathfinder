@@ -77,3 +77,8 @@ class AreaGrid:
         finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
         path, runs = finder.find_path(start, end, grid)
         return path
+
+    def get_solution_from_positions(self, pt1, pt2):
+        self._start = (pt1.x, pt1.y)
+        self._end = (pt2.x, pt2.y)
+        return self.get_solution()
