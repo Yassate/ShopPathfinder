@@ -38,15 +38,12 @@ def salesman_solution(cities):
         for j in range(i+1, len(cities)):
             dist = calc_dist(cities[i], cities[j])
             if dist < shortest:
-                #print(dist)
                 shortest = dist
                 nearest_p = cities[j]
         cities.remove(nearest_p)
         cities.insert(i+1, nearest_p)
         pygame.time.wait(200)
         draw_window()
-        #print(cities)
-        #print(calc_whole_dist(cities))
 
 
 def draw_window():

@@ -21,7 +21,7 @@ WHITE = (255, 255, 255)
 LGRAY = (180, 180, 180)
 FPS = 30
 
-cities_count = 10
+CITIES_COUNT = 10
 gridsize = 200
 
 def main():
@@ -33,23 +33,24 @@ def main():
 
     #TODO STEP1 - Generate random cities as list of tuples or dataclasses - DONE
     #TODO STEP2 - Cities should be located somewhere on the borders - DONE
-    #TODO STEP3 - Feed AStar solver with city pairs, keep results for each pair anyhow
-    #TODO STEP4 - Round-robin every city pair and save results    
+    #TODO STEP3 - Feed AStar solver with city pairs, keep results for each pair anyhow - DONE, kept in "_cached_paths" in AStar
+    #TODO STEP4 - Round-robin every city pair and save results - DONE, as above
     #TODO STEP5 - find a way for searching in the list for the path between given cities; it should be our distance calculation function
     #TODO STEP6 - perform traveling salesman on list of cities using distance calculation from STEP3
     #TODO STEP7 - draw evertything
 
     cities = []
 
-    for i in range(int(cities_count/2)):
+    for i in range(int(CITIES_COUNT/2)):
         pos_range = int(gridsize*0.05), int(gridsize*0.98)
         l_pos = int(gridsize*0.02), random.randint(*pos_range)
         r_pos = int(gridsize*0.95), random.randint(*pos_range)
         cities.append(City(Position(*l_pos)))
         cities.append(City(Position(*r_pos)))
 
-    i=1
+    i=0
     j=1
+    k=0
 
     while run:
         clock.tick(FPS)
@@ -57,19 +58,23 @@ def main():
         mygrid.reset_grid()
         mygrid.add_obstacles_from_grid(obstacles)
         st = time.time()
-        mygrid.solve_for_positions(cities[i].position, cities[i+1].position)
+        mygrid.solve_for_positions(cities[i].position, cities[j].position)
         ex_time = time.time() - st
         dt = time.time()
         draw_window(mygrid)
         print(f"Drawing took {time.time()-dt} seconds")
-        print(f"Solution for city pair no {i} found in {ex_time} seconds")
+        print(f"Solution for city pair no {i}, between city {i} and {j} found in {ex_time} seconds")
         pygame.time.wait(100)
 
-        i += 1
-        if i==cities_count-2:
-            j += 1
-            i = 1
-        if j==5:
+        if j==CITIES_COUNT-1:
+            i += 1
+            j = i
+        j += 1
+
+        if i==CITIES_COUNT-2:
+            k += 1
+            i = 0
+        if k==5:
             break
 
         for event in pygame.event.get():

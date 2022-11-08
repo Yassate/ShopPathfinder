@@ -71,6 +71,7 @@ class AreaGrid:
             finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
             path, runs = finder.find_path(start, end, grid)
             cur_path = Path([Position(p[0], p[1]) for p in path])
+            self._cached_paths.append(cur_path)
+
         self.set_path(cur_path)
-        self._cached_paths.append(cur_path)
         return 
