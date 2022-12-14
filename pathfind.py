@@ -3,7 +3,7 @@ environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 import time
 import pygame
 import random
-from AStar import AreaGrid, generate_obstacles
+from AStar import AreaGrid, generate_obstacles, generate_obstacles2
 from storage_types import Position, City, Path
 
 def draw_cities(cities):
@@ -29,15 +29,17 @@ def main():
     run = True
 
     mygrid = AreaGrid(win=WIN, size=gridsize, wh_pix=(WIDTH, HEIGHT))
-    obstacles = generate_obstacles(gridsize, obstacle_size=(round(gridsize/15),round(gridsize/8)), count=(min(40, gridsize)))
+    obstacles = generate_obstacles2(gridsize, obstacle_size=(round(gridsize/15),round(gridsize/8)), count=(min(40, gridsize)))
 
     #TODO STEP1 - Generate random cities as list of tuples or dataclasses - DONE
     #TODO STEP2 - Cities should be located somewhere on the borders - DONE
     #TODO STEP3 - Feed AStar solver with city pairs, keep results for each pair anyhow - DONE, kept in "_cached_paths" in AStar
     #TODO STEP4 - Round-robin every city pair and save results - DONE, as above
-    #TODO STEP5 - find a way for searching in the list for the path between given cities; it should be our distance calculation function
-    #TODO STEP6 - perform traveling salesman on list of cities using distance calculation from STEP3
-    #TODO STEP7 - draw evertything
+    #TODO STEP5 - Create shop-like map; with long shop shelves - in progress - shitty for now
+    #TODO STEP6 - Better algorithm for generating city coordinates, it should check coordinates if they are not taken by obstacle
+    #TODO STEP7 - find a way for searching in the list for the path between given cities; it should be our distance calculation function
+    #TODO STEP8 - perform traveling salesman on list of cities using distance calculation from STEP3
+    #TODO STEP9 - draw everything
 
     cities = []
 

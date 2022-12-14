@@ -18,6 +18,52 @@ def generate_obstacles(gridsize, obstacle_size=(30, 80), count=3):
         internal_grid[start_x:start_x+size_x, start_y:start_y+size_y] = 0
     return internal_grid
 
+def generate_obstacles2(gridsize, obstacle_size=(30, 80), count=3):
+    internal_grid = np.ones((gridsize,gridsize), dtype=np.int8)
+    startingPoints = []
+    startingPoints.append(Obstacle.Point2D(70,70))
+    startingPoints.append(Obstacle.Point2D(140,70))
+    startingPoints.append(Obstacle.Point2D(210,70))
+    startingPoints.append(Obstacle.Point2D(280,70))
+    startingPoints.append(Obstacle.Point2D(350,70))
+    startingPoints.append(Obstacle.Point2D(420,70))
+    startingPoints.append(Obstacle.Point2D(70,140))
+    startingPoints.append(Obstacle.Point2D(140,140))
+    startingPoints.append(Obstacle.Point2D(210,140))
+    startingPoints.append(Obstacle.Point2D(280,140))
+    startingPoints.append(Obstacle.Point2D(350,140))
+    startingPoints.append(Obstacle.Point2D(420,140))
+    startingPoints.append(Obstacle.Point2D(70,210))
+    startingPoints.append(Obstacle.Point2D(140,210))
+    startingPoints.append(Obstacle.Point2D(210,210))
+    startingPoints.append(Obstacle.Point2D(280,210))
+    startingPoints.append(Obstacle.Point2D(350,210))
+    startingPoints.append(Obstacle.Point2D(420,210))
+    for point in startingPoints:
+        obstacle = Obstacle(point, 20, 40)
+        obstacle.drawOnGrid(internal_grid)
+    return internal_grid    
+
+class Obstacle:
+    class Point2D:
+        def __init__(self, x: int, y: int):
+            self.x = x
+            self.y = y
+
+
+    def __init__(self, start_point: Point2D, height: int, width: int):
+        self.start_point = start_point  
+        self.height = height
+        self.width = width
+
+    def setStartPoint(self, start_point: Point2D):
+        self.start_point = start_point
+
+    def drawOnGrid(self, grid: np.ndarray):
+        grid[self.start_point.x:self.start_point.x + self.width, self.start_point.y:self.start_point.y + self.height] = 0
+
+    
+
 class AreaGrid:
     RED   = (255, 30, 70)
     BLACK = (0, 0, 0)
