@@ -3,7 +3,7 @@ environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 import time
 import pygame
 import random
-from AStar import AreaGrid, generate_obstacles, generate_obstacles2
+from AStar import AreaGrid
 from storage_types import Position, City, Path
 
 def draw_cities(cities):
@@ -15,27 +15,27 @@ def draw_window(mygrid):
     mygrid.draw()
     pygame.display.update()
 
-WIDTH, HEIGHT = 900, 900
+WIDTH, HEIGHT = 800, 800
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 WHITE = (255, 255, 255)
 LGRAY = (180, 180, 180)
 FPS = 30
-
 CITIES_COUNT = 10
-gridsize = 200
+
 
 def main():
     clock = pygame.time.Clock()
     run = True
 
-    mygrid = AreaGrid(win=WIN, size=gridsize, wh_pix=(WIDTH, HEIGHT))
-    obstacles = generate_obstacles2(gridsize, obstacle_size=(round(gridsize/15),round(gridsize/8)), count=(min(40, gridsize)))
+    mygrid = AreaGrid(win=WIN, filepath="input_files/obstacles.txt", wh_pix=(WIDTH, HEIGHT))
+    gridsize = mygrid.shape[0]
 
     #TODO STEP1 - Generate random cities as list of tuples or dataclasses - DONE
     #TODO STEP2 - Cities should be located somewhere on the borders - DONE
     #TODO STEP3 - Feed AStar solver with city pairs, keep results for each pair anyhow - DONE, kept in "_cached_paths" in AStar
     #TODO STEP4 - Round-robin every city pair and save results - DONE, as above
-    #TODO STEP5 - Create shop-like map; with long shop shelves - in progress - shitty for now
+    #TODO STEP5 - Create shop-like map; with long shop shelves - DONE, loaded from file
+    #TODO STEP5.5 A* doesn't work anymore, fix it
     #TODO STEP6 - Better algorithm for generating city coordinates, it should check coordinates if they are not taken by obstacle
     #TODO STEP7 - find a way for searching in the list for the path between given cities; it should be our distance calculation function
     #TODO STEP8 - perform traveling salesman on list of cities using distance calculation from STEP3
@@ -56,11 +56,8 @@ def main():
 
     while run:
         clock.tick(FPS)
-
-        mygrid.reset_grid()
-        mygrid.add_obstacles_from_grid(obstacles)
         st = time.time()
-        mygrid.solve_for_positions(cities[i].position, cities[j].position)
+        #mygrid.solve_for_positions(cities[i].position, cities[j].position)
         ex_time = time.time() - st
         dt = time.time()
         draw_window(mygrid)

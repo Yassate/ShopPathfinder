@@ -1,68 +1,9 @@
-from os import pathsep
 import numpy as np
 import pygame
-import random
 from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
-from storage_types import Position, City, Path
-
-
-def generate_obstacles(gridsize, obstacle_size=(30, 80), count=3):
-    internal_grid = np.ones((gridsize,gridsize), dtype=np.int8)
-    for i in range(count):
-        start_x = random.randint(max(obstacle_size), gridsize-2*max(obstacle_size)-1)
-        start_y = random.randint(max(obstacle_size), gridsize-2*max(obstacle_size)-1)
-        size_x = obstacle_size[(x_i:=random.randint(0,1))]
-        size_y = obstacle_size[abs(x_i-1)]
-        internal_grid[start_x:start_x+size_x, start_y:start_y+size_y] = 0
-    return internal_grid
-
-def generate_obstacles2(gridsize, obstacle_size=(30, 80), count=3):
-    internal_grid = np.ones((gridsize,gridsize), dtype=np.int8)
-    startingPoints = []
-    startingPoints.append(Obstacle.Point2D(70,70))
-    startingPoints.append(Obstacle.Point2D(140,70))
-    startingPoints.append(Obstacle.Point2D(210,70))
-    startingPoints.append(Obstacle.Point2D(280,70))
-    startingPoints.append(Obstacle.Point2D(350,70))
-    startingPoints.append(Obstacle.Point2D(420,70))
-    startingPoints.append(Obstacle.Point2D(70,140))
-    startingPoints.append(Obstacle.Point2D(140,140))
-    startingPoints.append(Obstacle.Point2D(210,140))
-    startingPoints.append(Obstacle.Point2D(280,140))
-    startingPoints.append(Obstacle.Point2D(350,140))
-    startingPoints.append(Obstacle.Point2D(420,140))
-    startingPoints.append(Obstacle.Point2D(70,210))
-    startingPoints.append(Obstacle.Point2D(140,210))
-    startingPoints.append(Obstacle.Point2D(210,210))
-    startingPoints.append(Obstacle.Point2D(280,210))
-    startingPoints.append(Obstacle.Point2D(350,210))
-    startingPoints.append(Obstacle.Point2D(420,210))
-    for point in startingPoints:
-        obstacle = Obstacle(point, 20, 40)
-        obstacle.drawOnGrid(internal_grid)
-    return internal_grid    
-
-class Obstacle:
-    class Point2D:
-        def __init__(self, x: int, y: int):
-            self.x = x
-            self.y = y
-
-
-    def __init__(self, start_point: Point2D, height: int, width: int):
-        self.start_point = start_point  
-        self.height = height
-        self.width = width
-
-    def setStartPoint(self, start_point: Point2D):
-        self.start_point = start_point
-
-    def drawOnGrid(self, grid: np.ndarray):
-        grid[self.start_point.x:self.start_point.x + self.width, self.start_point.y:self.start_point.y + self.height] = 0
-
-    
+from storage_types import Position, Path
 
 class AreaGrid:
     RED   = (255, 30, 70)
@@ -74,20 +15,19 @@ class AreaGrid:
     DGRAY = (100, 100, 100)
     _color = [DGRAY, LGRAY, GREEN] 
 
-    def __init__(self, win=[], size=10, wh_pix=(500, 500),cover=1, spacing=1):
+    def __init__(self, win=[], filepath="", wh_pix=(500, 500), cover=1, spacing=1):
         self._window = win
-        self.size = size
-        self.reset_grid()
-        self.w_pix = wh_pix[0]
-        self.h_pix = wh_pix[1]
-        self.el_w_pix = np.floor(self.w_pix*cover/size)-spacing
-        self.el_h_pix = np.floor(self.h_pix*cover/size)-spacing
+        self._grid = self._load_data_from_file(filepath)
+        self.shape = self._grid.shape
+        self.cover = cover
         self.spacing = spacing
+        self.el_w_pix = np.floor(wh_pix[0]*self.cover/self.shape[0])-self.spacing
+        self.el_h_pix = np.floor(wh_pix[1]*self.cover/self.shape[1])-self.spacing
         self._path: list[Position] = []
         self._cached_paths: list[Path] = []
 
-    def reset_grid(self):
-        self._grid = np.ones((self.size, self.size), dtype=np.int8)
+    def _load_data_from_file(self, filepath: str) -> np.ndarray:
+        return np.genfromtxt(filepath, delimiter=" ", dtype=np.int8, filling_values=1)
 
     def add_obstacles_from_grid(self, obst_grid):
         self._grid = np.multiply(self._grid, obst_grid)
