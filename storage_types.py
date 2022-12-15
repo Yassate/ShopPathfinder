@@ -1,21 +1,16 @@
 from dataclasses import dataclass
 
 @dataclass
-class Position:
+class Location:
     x: int
     y: int
-
-@dataclass
-class City():
-    position: Position
-    name: str = "RandomCity"
+    name: str = "viaPoint"
 
 @dataclass
 class Path:
-    positions: list[Position]
+    positions: list[Location]
 
     def is_between_points(self, pt1, pt2):
         pos_start = self.positions[0]
         pos_end = self.positions[-1]
-        a = 2
         return ((pos_start == pt1 and pos_end == pt2) or (pos_start == pt2 and pos_end == pt1))

@@ -3,7 +3,7 @@ import pygame
 from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
-from storage_types import Position, Path
+from storage_types import Location, Path
 
 class AreaGrid:
     RED   = (255, 30, 70)
@@ -18,19 +18,20 @@ class AreaGrid:
     def __init__(self, win=[], filepath="", wh_pix=(500, 500), cover=1, spacing=1):
         self._window = win
         self._grid = self._load_data_from_file(filepath)
+        self._org_grid = self._grid.copy()
         self.shape = self._grid.shape
         self.cover = cover
         self.spacing = spacing
         self.el_w_pix = np.floor(wh_pix[0]*self.cover/self.shape[0])-self.spacing
         self.el_h_pix = np.floor(wh_pix[1]*self.cover/self.shape[1])-self.spacing
-        self._path: list[Position] = []
+        self._path: list[Location] = []
         self._cached_paths: list[Path] = []
 
     def _load_data_from_file(self, filepath: str) -> np.ndarray:
         return np.genfromtxt(filepath, delimiter=" ", dtype=np.int8, filling_values=1)
 
-    def add_obstacles_from_grid(self, obst_grid):
-        self._grid = np.multiply(self._grid, obst_grid)
+    def reset_grid(self):
+        self._grid = self._org_grid.copy()
 
     def draw(self):
         for y, col in enumerate(self._grid):
@@ -56,7 +57,8 @@ class AreaGrid:
             end = grid.node(pt2.x, pt2.y)
             finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
             path, runs = finder.find_path(start, end, grid)
-            cur_path = Path([Position(p[0], p[1]) for p in path])
+            print(path)
+            cur_path = Path([Location(p[0], p[1]) for p in path])
             self._cached_paths.append(cur_path)
 
         self.set_path(cur_path)

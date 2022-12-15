@@ -14,12 +14,6 @@ def draw_lines_between_cities(cities):
 def calc_dist(p1, p2):
     return np.sqrt((abs(p1[0]-p2[0])**2 + abs(p1[1]-p2[1])**2))
 
-def calc_whole_dist(cities):
-    sum = 0
-    for i in range(len(cities)-1):
-        sum += calc_dist(cities[i], cities[i+1])
-    return sum 
-
 WIDTH, HEIGHT = 800, 800
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 WHITE = (255, 255, 255)
