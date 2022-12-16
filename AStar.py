@@ -46,6 +46,7 @@ class AreaGrid:
     def check_for_cached_solution(self, pt1, pt2):
         for path in self._cached_paths:
             if path.is_between_points(pt1, pt2):
+                print("Found in cache\n\n")
                 return path
 
     def solve_for_positions(self, pt1, pt2):
@@ -56,9 +57,10 @@ class AreaGrid:
             start = grid.node(pt1.x, pt1.y)
             end = grid.node(pt2.x, pt2.y)
             finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
-            path, runs = finder.find_path(start, end, grid)
-            print(path)
+            path, _ = finder.find_path(start, end, grid)
             cur_path = Path([Location(p[0], p[1]) for p in path])
+            cur_path.set_start_loc(pt1)
+            cur_path.set_target_loc(pt2)
             self._cached_paths.append(cur_path)
 
         self.set_path(cur_path)

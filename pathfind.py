@@ -2,7 +2,6 @@ from os import environ
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 import time
 import pygame
-import random
 from AStar import AreaGrid
 from storage_types import Location
 
@@ -58,21 +57,19 @@ def main():
     location_pairs = []
     for i, location in enumerate(locations):
         for j in range(i+1, len(locations)):
-            print((i,j))
             location_pairs.append((location, locations[j]))
-    print(len(location_pairs))
-
 
     i = 0
     while run:
+        i = i % len(location_pairs)
         clock.tick(FPS)
         st = time.time()
         mygrid.solve_for_positions(*location_pairs[i])
         ex_time = time.time() - st
         dt = time.time()
         draw_window(mygrid)
-        print(f"Drawing took {time.time()-dt} seconds")
-        print(f"Solution for city pair no {i}, between city {location_pairs[i]} and {location_pairs[i]} found in {ex_time} seconds")
+        # print(f"Drawing took {time.time()-dt} seconds")
+        # print(f"Solution for city pair no {i}, between city {location_pairs[i]} and {location_pairs[i]} found in {ex_time} seconds")
         pygame.time.wait(200)
 
         i += 1
@@ -82,8 +79,8 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
 
-        if i== len(location_pairs):
-            break
+        # if i == len(location_pairs):
+        #     break
 
     pygame.quit()
 
