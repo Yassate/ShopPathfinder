@@ -24,7 +24,7 @@ class AreaGrid:
         self.spacing = spacing
         self.el_w_pix = np.floor(wh_pix[0]*self.cover/self.shape[0])-self.spacing
         self.el_h_pix = np.floor(wh_pix[1]*self.cover/self.shape[1])-self.spacing
-        self._path: list[Location] = []
+        self._path: Path
         self._cached_paths: list[Path] = []
 
     def _load_data_from_file(self, filepath: str) -> np.ndarray:
@@ -40,8 +40,8 @@ class AreaGrid:
 
     def set_path(self, path):
         self._path = path
-        for position in path.positions:
-            self._grid.itemset((position.y, position.x), -2)
+        for location in path.locations:
+            self._grid.itemset((location.y, location.x), -2)
 
     def check_for_cached_solution(self, pt1, pt2):
         for path in self._cached_paths:
@@ -49,7 +49,7 @@ class AreaGrid:
                 print("Found in cache\n\n")
                 return path
 
-    def solve_for_positions(self, pt1, pt2):
+    def solve_for_locations(self, pt1, pt2):
         if cached_path:= self.check_for_cached_solution(pt1, pt2):
             cur_path = cached_path
         else:
@@ -58,10 +58,17 @@ class AreaGrid:
             end = grid.node(pt2.x, pt2.y)
             finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
             path, _ = finder.find_path(start, end, grid)
+            print(pt1)
+            print(pt2)
+            print(path)
             cur_path = Path([Location(p[0], p[1]) for p in path])
             cur_path.set_start_loc(pt1)
             cur_path.set_target_loc(pt2)
             self._cached_paths.append(cur_path)
 
         self.set_path(cur_path)
-        return 
+        return
+
+    def get_shortest_length_between_locations(self, pt1, pt2) -> int:
+        self.solve_for_locations(pt1, pt2)
+        return self._path.length()

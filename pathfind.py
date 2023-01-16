@@ -59,18 +59,31 @@ def main():
         for j in range(i+1, len(locations)):
             location_pairs.append((location, locations[j]))
 
+    # for i in range(len(locations)-1):
+    #     shortest = WIDTH+HEIGHT
+    #     for j in range(i+1, len(locations)):
+    #         dist = mygrid.get_shortest_length_between_locations(locations[i], locations[j])
+    #         if dist < shortest:
+    #             shortest = dist
+    #             nearest_p = locations[j]
+    #     locations.remove(nearest_p)
+    #     locations.insert(i+1, nearest_p)
+    
+    # print(locations)
+
     i = 0
     while run:
         i = i % len(location_pairs)
         clock.tick(FPS)
         st = time.time()
-        mygrid.solve_for_positions(*location_pairs[i])
+        mygrid.solve_for_locations(*location_pairs[i])
+        print(len(location_pairs))
         ex_time = time.time() - st
         dt = time.time()
         draw_window(mygrid)
         # print(f"Drawing took {time.time()-dt} seconds")
         # print(f"Solution for city pair no {i}, between city {location_pairs[i]} and {location_pairs[i]} found in {ex_time} seconds")
-        pygame.time.wait(200)
+        pygame.time.wait(1000)
 
         i += 1
         mygrid.reset_grid()
@@ -83,6 +96,9 @@ def main():
         #     break
 
     pygame.quit()
+
+
+
 
 if __name__ == "__main__":
     main()
