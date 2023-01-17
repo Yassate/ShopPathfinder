@@ -22,5 +22,5 @@ class Path:
     def is_between_points(self, pt1, pt2) -> bool:
         pos_start = self.locations[0]
         pos_end = self.locations[-1]
-        print(f"Pt1: {pt1}, Pt2: {pt2}, Pos start: {pos_start}, pos end: {pos_end}")
+        # print(f"Pt1: {pt1}, Pt2: {pt2}, Pos start: {pos_start}, pos end: {pos_end}")
         return ((pos_start == pt1 and pos_end == pt2) or (pos_start == pt2 and pos_end == pt1))

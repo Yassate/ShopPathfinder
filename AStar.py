@@ -13,7 +13,7 @@ class AreaGrid:
     LGRAY = (180, 180, 180)
     GRAY  = (128, 128, 128)
     DGRAY = (100, 100, 100)
-    _color = [DGRAY, LGRAY, GREEN] 
+    _color = [DGRAY, LGRAY, GREEN, RED] 
 
     def __init__(self, win=[], filepath="", wh_pix=(500, 500), cover=1, spacing=1):
         self._window = win
@@ -46,8 +46,11 @@ class AreaGrid:
     def check_for_cached_solution(self, pt1, pt2):
         for path in self._cached_paths:
             if path.is_between_points(pt1, pt2):
-                print("Found in cache\n\n")
+                # print("Found in cache\n\n")
                 return path
+
+    def set_location(self, location):
+        self._grid.itemset((location.y, location.x), -3)
 
     def solve_for_locations(self, pt1, pt2):
         if cached_path:= self.check_for_cached_solution(pt1, pt2):
@@ -58,9 +61,6 @@ class AreaGrid:
             end = grid.node(pt2.x, pt2.y)
             finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
             path, _ = finder.find_path(start, end, grid)
-            print(pt1)
-            print(pt2)
-            print(path)
             cur_path = Path([Location(p[0], p[1]) for p in path])
             cur_path.set_start_loc(pt1)
             cur_path.set_target_loc(pt2)
