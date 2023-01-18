@@ -13,9 +13,9 @@ class AreaGrid:
     LGRAY = (180, 180, 180)
     GRAY  = (128, 128, 128)
     DGRAY = (100, 100, 100)
-    _color = [DGRAY, LGRAY, GREEN, RED] 
+    _color = [DGRAY, LGRAY, GREEN, RED]
 
-    def __init__(self, win=[], filepath="", wh_pix=(500, 500), cover=1, spacing=1):
+    def __init__(self, win, filepath="", wh_pix=(500, 500), cover=1, spacing=1):
         self._window = win
         self._grid = self._load_data_from_file(filepath)
         self._org_grid = self._grid.copy()
@@ -65,9 +65,7 @@ class AreaGrid:
             cur_path.set_start_loc(pt1)
             cur_path.set_target_loc(pt2)
             self._cached_paths.append(cur_path)
-
         self.set_path(cur_path)
-        return
 
     def get_shortest_length_between_locations(self, pt1, pt2) -> int:
         self.solve_for_locations(pt1, pt2)

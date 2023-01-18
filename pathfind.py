@@ -1,6 +1,5 @@
 from os import environ
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
-import time
 import pygame
 from AStar import AreaGrid
 from storage_types import Location
@@ -22,22 +21,9 @@ def main():
     run = True
 
     mygrid = AreaGrid(win=WIN, filepath="input_files/obstacles.txt", wh_pix=(WIDTH, HEIGHT))
-    gridsize = mygrid.shape[0]
 
-    #TODO STEP1 - Generate random cities as list of tuples or dataclasses - DONE
-    #TODO STEP2 - Cities should be located somewhere on the borders - DONE
-    #TODO STEP3 - Feed AStar solver with city pairs, keep results for each pair anyhow - DONE, kept in "_cached_paths" in AStar
-    #TODO STEP4 - Round-robin every city pair and save results - DONE, as above
-    #TODO STEP5 - Create shop-like map; with long shop shelves - DONE, loaded from file
-    #TODO STEP5.5 A* doesn't work anymore, fix it - DONE
-    #TODO STEP6 - Generate smth around 10 of cities (anyway, it should be renamed to locations or products) - DONE
-    #TODO STEP6.5 - move them to main? or move salesman algorithm here anyhow - DONE, moved to pathfinder
-    #TODO STEP7 - find a way for searching in the list for the path between given cities - DONE
-    #TODO STEP8 - perform traveling salesman on list of cities using distance calculation from STEP3
-    #TODO STEP9 - draw locations at the beginning - DONE
-    #TODO STEP10 - draw best route - DONE
-    #TODO STEP11 - check for better drawing function; for now drawing is using same data as AStarFinder, which prevents from drawing locations permanently 
-    #TODO STEP12 - set start and end location and solve for them
+    #TODO STEP1 - check for better drawing function; for now drawing is using same data as AStarFinder, which prevents from drawing locations permanently
+    #TODO STEP2 - set start and end location and solve for them
 
     locations = []
     locations.append(Location(2, 2, "Tomato"))
@@ -67,7 +53,6 @@ def main():
                 nearest_p = locations[j]
         locations.remove(nearest_p)
         locations.insert(i+1, nearest_p)
-    
     location_pairs = []
     for i in range(len(locations)-1):
         location_pairs.append((locations[i], locations[i+1]))
@@ -76,13 +61,8 @@ def main():
     while run:
         i = i % len(location_pairs)
         clock.tick(FPS)
-        st = time.time()
         mygrid.solve_for_locations(*location_pairs[i])
-        ex_time = time.time() - st
-        dt = time.time()
         draw_window(mygrid)
-        # print(f"Drawing took {time.time()-dt} seconds")
-        # print(f"Solution for city pair no {i}, between city {location_pairs[i]} and {location_pairs[i]} found in {ex_time} seconds")
         pygame.time.wait(500)
 
         i += 1

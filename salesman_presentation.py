@@ -1,5 +1,5 @@
-import pygame
 import random
+import pygame
 import numpy as np
 
 def draw_cities(cities):
@@ -11,18 +11,18 @@ def draw_lines_between_cities(cities):
         pygame.draw.line(surface=WIN, color=RED, start_pos=cities[i], end_pos=cities[i+1], width=3)
 
 
-def calc_dist(p1, p2):
-    return np.sqrt((abs(p1[0]-p2[0])**2 + abs(p1[1]-p2[1])**2))
+def calc_dist(p_1, p_2):
+    return np.sqrt((abs(p_1[0]-p_2[0])**2 + abs(p_1[1]-p_2[1])**2))
 
 WIDTH, HEIGHT = 800, 800
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 WHITE = (255, 255, 255)
 RED = (255, 30, 70)
 FPS = 60
-cities_count = 30
+CITIES_COUNT = 30
 cities = []
 
-for i in range(cities_count):
+for i in range(CITIES_COUNT):
     city = random.randint(0,WIDTH), random.randint(0,HEIGHT)
     cities.append(city)
 
@@ -39,7 +39,6 @@ def salesman_solution(cities):
         pygame.time.wait(200)
         draw_window()
 
-
 def draw_window():
     WIN.fill(WHITE)
     draw_cities(cities)
@@ -47,15 +46,12 @@ def draw_window():
     pygame.display.update()
 
 def main():
-    clock = pygame.time.Clock()
     run = True
     salesman_solution(cities)
     while run:
-        #clock.tick(FPS)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-        #draw_window()
 
     pygame.quit()
 
