@@ -7,9 +7,12 @@ from storage_types import Location
 def draw_window(mygrid):
     WIN.fill(LGRAY)
     mygrid.draw()
+    textfont = pygame.font.SysFont("monospace", 20)
+    hello_text = textfont.render("Hola Amigo", 1, WHITE)
+    WIN.blit(hello_text, (810, 20))
     pygame.display.update()
 
-WIDTH, HEIGHT = 800, 800
+WIDTH, HEIGHT = 1000, 800
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 WHITE = (255, 255, 255)
 LGRAY = (180, 180, 180)
@@ -19,11 +22,18 @@ CITIES_COUNT = 10
 def main():
     clock = pygame.time.Clock()
     run = True
+    pygame.font.init()
 
-    mygrid = AreaGrid(win=WIN, filepath="input_files/obstacles.txt", wh_pix=(WIDTH, HEIGHT))
+    mygrid = AreaGrid(win=WIN, filepath="input_files/obstacles.txt", wh_pix=(WIDTH-200, HEIGHT))
 
-    #TODO STEP1 - check for better drawing function; for now drawing is using same data as AStarFinder, which prevents from drawing locations permanently
-    #TODO STEP2 - set start and end location and solve for them
+    #Acceptance criteria - FLOW:
+    #Opening the app - you see the map and on the right side, short list of clickable product names + find path and reset button
+    #List loadable from file, paths to file and map can be hardcoded/parameter of main or taken from script folder
+    #After clicking the product it remains selected, until it's deselected. Both action causes to mark and unmark location on the map
+    # "Find Path" triggers algorithm and shows path on the map
+    # "Reset" causes deselecting of all products and clears the map
+
+    #TODO #1 - create buttons on the right, pixel art, clickable buttons, like on youtube video 8SzTzvrWaAA
 
     locations = []
     locations.append(Location(2, 2, "Tomato"))
