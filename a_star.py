@@ -63,4 +63,5 @@ class AreaGrid:
 
     def get_shortest_length_between_locations(self, pt1, pt2) -> int:
         self.solve_for_locations(pt1, pt2)
+        self.reset_grid()
         return self._path.length()

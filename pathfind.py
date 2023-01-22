@@ -1,22 +1,17 @@
 from os import environ
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 import pygame
-from AStar import AreaGrid
+from a_star import AreaGrid
 from storage_types import Location
-from Button import Button
+from button import Button
 from colors import LGREY
-
-def draw_window(mygrid):
-    WIN.fill(LGREY)
-    mygrid.draw()
-    # pygame.display.update()
 
 HEIGHT = 750
 GRID_WIDTH = HEIGHT
 BUTTONS_WIDTH = round(1/4*GRID_WIDTH)
 WIDTH = GRID_WIDTH + BUTTONS_WIDTH
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-FPS = 30
+FPS = 5
 
 def main():
     clock = pygame.time.Clock()
@@ -29,8 +24,6 @@ def main():
     const_buttons_height = 0.04*HEIGHT
     min_spacing = round(const_buttons_height/6) or 1
     const_buttons_y = HEIGHT - const_buttons_height - 4*min_spacing
-    print(const_buttons_height)
-    print(min_spacing)
     
     find_path_button = Button('Find path', const_buttons_width, const_buttons_height, (GRID_WIDTH+min_spacing,const_buttons_y))
     reset_button = Button('Reset', const_buttons_width, const_buttons_height, (GRID_WIDTH+const_buttons_width+3*min_spacing,const_buttons_y))
@@ -45,6 +38,8 @@ def main():
     # "Find Path" triggers algorithm and shows path on the map
     # "Reset" causes deselecting of all products and clears the map
 
+    #TODO NEXT Selecting and deselecting the product will be shown on map
+
     locations = []
     locations.append(Location(2, 2, "Tomato"))
     locations.append(Location(15, 5, "Banana"))
@@ -58,26 +53,27 @@ def main():
     locations.append(Location(15, 48, "MMs"))
     locations.append(Location(48, 48, "Water"))
 
-    button_count = 15
-    
-    button_height = round(0.9*find_path_button.top_rect.topleft[1]/(4/3*button_count))
-    if button_height>30:
-        button_height=30
+    button_height = round(0.9*find_path_button.top_rect.topleft[1]/(4/3*len(locations)))
+    button_height = min(30, button_height)
 
     vert_space = round(button_height/3)
-    for i in range(button_count):
-        buttons.append(Button("Temp", width=BUTTONS_WIDTH-2*min_spacing, height=button_height, pos=(GRID_WIDTH+min_spacing, vert_space+(button_height+vert_space)*i)))
+
+    for i, loc in enumerate(locations):
+        buttons.append(Button(loc.name, width=BUTTONS_WIDTH-2*min_spacing, height=button_height, pos=(GRID_WIDTH+min_spacing, vert_space+(button_height+vert_space)*i)))
 
     for location in locations:
         mygrid.set_location(location)
-    draw_window(mygrid)
+
+    WIN.fill(LGREY)
+    mygrid.draw()
+    pygame.display.update()
+
     mygrid.reset_grid()
 
     for i in range(len(locations)-1):
         shortest = WIDTH*HEIGHT
         for j in range(i+1, len(locations)):
             dist = mygrid.get_shortest_length_between_locations(locations[i], locations[j])
-            mygrid.reset_grid()
             if dist < shortest:
                 shortest = dist
                 nearest_p = locations[j]
@@ -90,14 +86,17 @@ def main():
     i = 0
     while run:
         i = i % len(location_pairs)
+
         clock.tick(FPS)
         mygrid.solve_for_locations(*location_pairs[i])
-        draw_window(mygrid)
+
+
+        WIN.fill(LGREY)
+        mygrid.draw()
         for button in buttons:
             button.draw(WIN)
 
         pygame.display.update()
-        pygame.time.wait(10)
 
         i += 1
         # mygrid.reset_grid()
