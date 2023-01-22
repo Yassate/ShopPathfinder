@@ -23,7 +23,7 @@ CITIES_COUNT = 10
 class Button:
     def __init__(self, text, width, height, pos):
         self.color = DGREY
-        self.font = pygame.font.Font(None, round(4*height/5))
+        self.font = pygame.font.Font(None, round(9*height/10))
         self.text_surf = self.font.render(text, True, WHITE)
         self.button_pressed = False
         self.mouse_pressed = False
@@ -90,6 +90,17 @@ def main():
     locations.append(Location(15, 48, "MMs"))
     locations.append(Location(48, 48, "Water"))
 
+    button_count = 50
+    
+    buttons = []
+    button_height = int(0.95*HEIGHT/((4*button_count)/3))
+    if button_height>30:
+        button_height=30
+
+    vert_space = int(button_height/3)
+    for i in range(button_count):
+        buttons.append(Button("Temp", width=160, height=button_height, pos=(820, vert_space+(button_height+vert_space)*i)))
+
     for location in locations:
         mygrid.set_location(location)
     draw_window(mygrid)
@@ -115,10 +126,12 @@ def main():
         clock.tick(FPS)
         mygrid.solve_for_locations(*location_pairs[i])
         draw_window(mygrid)
-        button1.draw()
-        button2.draw()
-        button3.draw()
-        button4.draw()
+        for button in buttons:
+            button.draw()
+        # button1.draw()
+        # button2.draw()
+        # button3.draw()
+        # button4.draw()
 
         pygame.display.update()
 
