@@ -4,16 +4,10 @@ from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
 from storage_types import Location, Path
+from colors import LGREY, DGREY, GREEN, RED
 
 class AreaGrid:
-    RED   = (255, 30, 70)
-    BLACK = (0, 0, 0)
-    GREEN = (0, 168, 107)
-    WHITE = (255, 255, 255)
-    LGRAY = (180, 180, 180)
-    GRAY  = (128, 128, 128)
-    DGRAY = (100, 100, 100)
-    _color = [DGRAY, LGRAY, GREEN, RED]
+    _color = [DGREY, LGREY, GREEN, RED]
 
     def __init__(self, win, filepath="", wh_pix=(500, 500), cover=1, spacing=1):
         self._window = win
