@@ -9,7 +9,10 @@ def draw_window(mygrid):
     mygrid.draw()
     # pygame.display.update()
 
-WIDTH, HEIGHT = 1000, 800
+HEIGHT = 750
+GRID_WIDTH = HEIGHT
+BUTTONS_WIDTH = round(1/4*GRID_WIDTH)
+WIDTH = GRID_WIDTH + BUTTONS_WIDTH
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 WHITE = (255, 255, 255)
 DGREEN = (24, 148, 92)
@@ -18,12 +21,11 @@ DGREY = (100, 100, 100)
 DDGREY = (70, 70, 70)
 
 FPS = 30
-CITIES_COUNT = 10
 
 class Button:
     def __init__(self, text, width, height, pos):
         self.color = DGREY
-        self.font = pygame.font.Font(None, round(9*height/10))
+        self.font = pygame.font.Font(None, round(9/10*height))
         self.text_surf = self.font.render(text, True, WHITE)
         self.button_pressed = False
         self.mouse_pressed = False
@@ -37,9 +39,9 @@ class Button:
     def draw(self):
         self.click_detect()
         self._update_button_pos()
-        pygame.draw.rect(WIN, DDGREY, self.bottom_rect, border_radius=12)
-        pygame.draw.rect(WIN, self.color, self.top_rect, border_radius=12)
-        pygame.draw.rect(WIN, WHITE, self.top_rect, width=1, border_radius=12)
+        pygame.draw.rect(WIN, DDGREY, self.bottom_rect, border_radius=10)
+        pygame.draw.rect(WIN, self.color, self.top_rect, border_radius=10)
+        pygame.draw.rect(WIN, WHITE, self.top_rect, width=1, border_radius=10)
         WIN.blit(self.text_surf, self.text_rect)
 
     def _update_button_pos(self):
@@ -61,12 +63,23 @@ def main():
     clock = pygame.time.Clock()
     run = True
     pygame.font.init()
+    buttons = []
 
-    mygrid = AreaGrid(win=WIN, filepath="input_files/obstacles.txt", wh_pix=(WIDTH-200, HEIGHT))
-    button1 = Button('Tomato', 160 ,30, (820,10))
-    button2 = Button('Banana', 160 ,30, (820,50))
-    button3 = Button('Oil', 160 ,30, (820,90))
-    button4 = Button('Potatoes', 160 ,30, (820,130))
+
+    mygrid = AreaGrid(win=WIN, filepath="input_files/obstacles.txt", wh_pix=(GRID_WIDTH, HEIGHT))
+
+    const_buttons_width = 0.9*BUTTONS_WIDTH/2
+    const_buttons_height = 0.04*HEIGHT
+    min_spacing = round(const_buttons_height/6) or 1
+    const_buttons_y = HEIGHT - const_buttons_height - 4*min_spacing
+    print(const_buttons_height)
+    print(min_spacing)
+    
+    find_path_button = Button('Find path', const_buttons_width, const_buttons_height, (GRID_WIDTH+min_spacing,const_buttons_y))
+    reset_button = Button('Reset', const_buttons_width, const_buttons_height, (GRID_WIDTH+const_buttons_width+3*min_spacing,const_buttons_y))
+    buttons.append(find_path_button)
+    buttons.append(reset_button)
+
 
     #Acceptance criteria - FLOW:
     #Opening the app - you see the map and on the right side, short list of clickable product names + find path and reset button
@@ -74,8 +87,6 @@ def main():
     #After clicking the product it remains selected, until it's deselected. Both action causes to mark and unmark location on the map
     # "Find Path" triggers algorithm and shows path on the map
     # "Reset" causes deselecting of all products and clears the map
-
-    #TODO #1 - create multiple buttons on the right, pixel art, clickable buttons, like on youtube video 8SzTzvrWaAA
 
     locations = []
     locations.append(Location(2, 2, "Tomato"))
@@ -90,16 +101,15 @@ def main():
     locations.append(Location(15, 48, "MMs"))
     locations.append(Location(48, 48, "Water"))
 
-    button_count = 50
+    button_count = 15
     
-    buttons = []
-    button_height = int(0.95*HEIGHT/((4*button_count)/3))
+    button_height = round(0.9*find_path_button.top_rect.topleft[1]/(4/3*button_count))
     if button_height>30:
         button_height=30
 
-    vert_space = int(button_height/3)
+    vert_space = round(button_height/3)
     for i in range(button_count):
-        buttons.append(Button("Temp", width=160, height=button_height, pos=(820, vert_space+(button_height+vert_space)*i)))
+        buttons.append(Button("Temp", width=BUTTONS_WIDTH-2*min_spacing, height=button_height, pos=(GRID_WIDTH+min_spacing, vert_space+(button_height+vert_space)*i)))
 
     for location in locations:
         mygrid.set_location(location)
@@ -107,7 +117,7 @@ def main():
     mygrid.reset_grid()
 
     for i in range(len(locations)-1):
-        shortest = WIDTH+HEIGHT
+        shortest = WIDTH*HEIGHT
         for j in range(i+1, len(locations)):
             dist = mygrid.get_shortest_length_between_locations(locations[i], locations[j])
             mygrid.reset_grid()
@@ -128,13 +138,8 @@ def main():
         draw_window(mygrid)
         for button in buttons:
             button.draw()
-        # button1.draw()
-        # button2.draw()
-        # button3.draw()
-        # button4.draw()
 
         pygame.display.update()
-
         pygame.time.wait(10)
 
         i += 1
