@@ -5,13 +5,14 @@ from a_star import AreaGrid
 from storage_types import Location
 from button import Button
 from colors import LGREY
+from typing import List
 
 HEIGHT = 750
 GRID_WIDTH = HEIGHT
 BUTTONS_WIDTH = round(1/4*GRID_WIDTH)
 WIDTH = GRID_WIDTH + BUTTONS_WIDTH
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-FPS = 5
+FPS = 30
 
 def main():
     clock = pygame.time.Clock()
@@ -40,7 +41,21 @@ def main():
 
     #TODO NEXT Selecting and deselecting the product will be shown on map
 
-    locations = []
+    locations2 = {
+        "Tomato":   Location(2,2),
+        "Banana":   Location(15, 5),
+        "Oil":      Location(35, 8),
+        "Potatoes": Location(23, 20),
+        "Carrot":   Location(27, 27),
+        "Bread":    Location(35, 30),
+        "Beer":     Location(27, 38),
+        "Rolls":    Location(5, 39),
+        "Wine":     Location(5, 44),
+        "MMs":      Location(15, 48),
+        "Water":    Location(48, 48)     
+    }
+
+    locations: List[Location] = []
     locations.append(Location(2, 2, "Tomato"))
     locations.append(Location(15, 5, "Banana"))
     locations.append(Location(35, 8, "Oil"))
@@ -64,31 +79,44 @@ def main():
     for location in locations:
         mygrid.set_location(location)
 
+    to_find: List[Location] = []
+
     WIN.fill(LGREY)
     mygrid.draw()
     pygame.display.update()
 
     mygrid.reset_grid()
 
-    for i in range(len(locations)-1):
-        shortest = WIDTH*HEIGHT
-        for j in range(i+1, len(locations)):
-            dist = mygrid.get_shortest_length_between_locations(locations[i], locations[j])
-            if dist < shortest:
-                shortest = dist
-                nearest_p = locations[j]
-        locations.remove(nearest_p)
-        locations.insert(i+1, nearest_p)
-    location_pairs = []
-    for i in range(len(locations)-1):
-        location_pairs.append((locations[i], locations[i+1]))
-
     i = 0
     while run:
-        i = i % len(location_pairs)
-
+        # i = i % len(location_pairs)
+        to_find = []
         clock.tick(FPS)
-        mygrid.solve_for_locations(*location_pairs[i])
+        if find_path_button.pressed:
+            for button in buttons:
+                if button.pressed:
+                    for loc in locations:
+                        if loc.name==button.loc_name:
+                            to_find.append(loc)
+
+            for i in range(len(to_find)-1):
+                shortest = WIDTH*HEIGHT
+                for j in range(i+1, len(to_find)):
+                    dist = mygrid.get_shortest_length_between_locations(to_find[i], to_find[j])
+                    if dist < shortest:
+                        shortest = dist
+                        nearest_p = to_find[j]
+                to_find.remove(nearest_p)
+                to_find.insert(i+1, nearest_p)
+            location_pairs = []
+            for i in range(len(to_find)-1):
+                location_pairs.append((to_find[i], to_find[i+1]))
+            for loc_pair in location_pairs:
+                mygrid.solve_for_locations(*loc_pair)
+            find_path_button.pressed=False
+        
+        if reset_button.pressed:
+            mygrid.reset_grid()
 
 
         WIN.fill(LGREY)

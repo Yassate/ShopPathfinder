@@ -4,11 +4,12 @@ import pygame
 from colors import WHITE, DGREY, DDGREY, DGREEN
 
 class Button:
-    def __init__(self, text, width, height, pos):
+    def __init__(self, loc_name, width, height, pos):
+        self.loc_name = loc_name
         self.color = DGREY
         self.font = pygame.font.Font(None, round(9/10*height))
-        self.text_surf = self.font.render(text, True, WHITE)
-        self.button_pressed = False
+        self.text_surf = self.font.render(loc_name, True, WHITE)
+        self.pressed = False
         self.mouse_pressed = False
         self.pos_y_default = pos[1]
         self.pos_y_pressed = pos[1] + round(height/6)
@@ -26,8 +27,8 @@ class Button:
         WIN.blit(self.text_surf, self.text_rect)
 
     def _update_button_pos(self):
-        self.top_rect.y = self.pos_y_pressed if self.button_pressed else self.pos_y_default
-        self.color = DGREEN if self.button_pressed else DGREY
+        self.top_rect.y = self.pos_y_pressed if self.pressed else self.pos_y_default
+        self.color = DGREEN if self.pressed else DGREY
         self.text_rect.center = self.top_rect.center
 
     def click_detect(self):
@@ -37,5 +38,5 @@ class Button:
                 self.mouse_pressed = True
             else:
                 if self.mouse_pressed == True:
-                    self.button_pressed = not self.button_pressed
+                    self.pressed = not self.pressed
                     self.mouse_pressed = False
