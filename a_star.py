@@ -36,6 +36,7 @@ class AreaGrid:
         self._path = path
         for location in path.locations:
             self._grid.itemset((location.y, location.x), -2)
+        
 
     def check_for_cached_solution(self, pt1, pt2):
         for path in self._cached_paths:
@@ -46,11 +47,14 @@ class AreaGrid:
     def set_location(self, location):
         self._grid.itemset((location.y, location.x), -3)
 
+    def clear_location(self, location):
+        self._grid.itemset((location.y, location.x), 1)
+
     def solve_for_locations(self, pt1, pt2):
         if cached_path:= self.check_for_cached_solution(pt1, pt2):
             cur_path = cached_path
         else:
-            grid = Grid(matrix=self._grid)
+            grid = Grid(matrix=self._org_grid)
             start = grid.node(pt1.x, pt1.y)
             end = grid.node(pt2.x, pt2.y)
             finder = AStarFinder(diagonal_movement=DiagonalMovement.never)

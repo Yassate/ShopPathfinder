@@ -39,7 +39,7 @@ def main():
     # "Find Path" triggers algorithm and shows path on the map
     # "Reset" causes deselecting of all products and clears the map
 
-    #TODO NEXT Selecting and deselecting the product will be shown on map
+    #TODO NEXT Selecting and deselecting the product will be shown on map; something broken with button.pressed, it's imediately reset
 
     locations2 = {
         "Tomato":   Location(2,2),
@@ -76,8 +76,10 @@ def main():
     for i, loc in enumerate(locations):
         buttons.append(Button(loc.name, width=BUTTONS_WIDTH-2*min_spacing, height=button_height, pos=(GRID_WIDTH+min_spacing, vert_space+(button_height+vert_space)*i)))
 
-    for location in locations:
-        mygrid.set_location(location)
+    def get_loc_by_name(name, locations):
+        for loc in locations:
+            if loc.name == name:
+                return loc
 
     to_find: List[Location] = []
 
@@ -85,19 +87,30 @@ def main():
     mygrid.draw()
     pygame.display.update()
 
-    mygrid.reset_grid()
 
     i = 0
     while run:
         # i = i % len(location_pairs)
         to_find = []
         clock.tick(FPS)
+
+        for button in buttons:
+            loc = get_loc_by_name(button.loc_name, locations)
+            if button.pressed:
+                to_find.append(loc)
+                mygrid.set_location(loc)
+            else:
+                if loc in to_find:
+                    to_find.remove(loc)
+                    mygrid.clear_location(loc)
+
         if find_path_button.pressed:
             for button in buttons:
                 if button.pressed:
                     for loc in locations:
                         if loc.name==button.loc_name:
                             to_find.append(loc)
+                            mygrid.set_location(loc)
 
             for i in range(len(to_find)-1):
                 shortest = WIDTH*HEIGHT
