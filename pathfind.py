@@ -18,7 +18,8 @@ def main():
     clock = pygame.time.Clock()
     run = True
     pygame.font.init()
-    buttons = []
+    loc_buttons = []
+    func_buttons = []
     mygrid = AreaGrid(win=WIN, filepath="input_files/obstacles.txt", wh_pix=(GRID_WIDTH, HEIGHT))
 
     const_buttons_width = 0.9*BUTTONS_WIDTH/2
@@ -28,18 +29,21 @@ def main():
     
     find_path_button = Button('Find path', const_buttons_width, const_buttons_height, (GRID_WIDTH+min_spacing,const_buttons_y))
     reset_button = Button('Reset', const_buttons_width, const_buttons_height, (GRID_WIDTH+const_buttons_width+3*min_spacing,const_buttons_y))
-    buttons.append(find_path_button)
-    buttons.append(reset_button)
+    func_buttons.append(find_path_button)
+    func_buttons.append(reset_button)
 
 
-    #Acceptance criteria - FLOW:
-    #Opening the app - you see the map and on the right side, short list of clickable product names + find path and reset button
-    #List loadable from file, paths to file and map can be hardcoded/parameter of main or taken from script folder
-    #After clicking the product it remains selected, until it's deselected. Both action causes to mark and unmark location on the map
+    # Acceptance criteria - FLOW:
+    # Opening the app - you see the map and on the right side, short list of clickable product names + find path and reset button
+    # List loadable from file, paths to file and map can be hardcoded/parameter of main or taken from script folder
+    # After clicking the product it remains selected, until it's deselected. Both action causes to mark and unmark location on the map
     # "Find Path" triggers algorithm and shows path on the map
     # "Reset" causes deselecting of all products and clears the map
+    # Usable multiple times
 
-    #TODO NEXT Selecting and deselecting the product will be shown on map; something broken with button.pressed, it's imediately reset
+    #TODO NEXT - WORK ON SELECT/DESELECT and RESET BUTTON (stays clicked and doesn't reset other buttons)
+    #TODO NEXTNEXT - REFACTOR; it's a mess here
+    #TODO NEXTNEXTNEXT - Load list from file 
 
     locations2 = {
         "Tomato":   Location(2,2),
@@ -74,7 +78,7 @@ def main():
     vert_space = round(button_height/3)
 
     for i, loc in enumerate(locations):
-        buttons.append(Button(loc.name, width=BUTTONS_WIDTH-2*min_spacing, height=button_height, pos=(GRID_WIDTH+min_spacing, vert_space+(button_height+vert_space)*i)))
+        loc_buttons.append(Button(loc.name, width=BUTTONS_WIDTH-2*min_spacing, height=button_height, pos=(GRID_WIDTH+min_spacing, vert_space+(button_height+vert_space)*i)))
 
     def get_loc_by_name(name, locations):
         for loc in locations:
@@ -87,31 +91,18 @@ def main():
     mygrid.draw()
     pygame.display.update()
 
-
     i = 0
     while run:
-        # i = i % len(location_pairs)
         to_find = []
         clock.tick(FPS)
 
-        for button in buttons:
+        for button in loc_buttons:
             loc = get_loc_by_name(button.loc_name, locations)
             if button.pressed:
                 to_find.append(loc)
                 mygrid.set_location(loc)
-            else:
-                if loc in to_find:
-                    to_find.remove(loc)
-                    mygrid.clear_location(loc)
 
         if find_path_button.pressed:
-            for button in buttons:
-                if button.pressed:
-                    for loc in locations:
-                        if loc.name==button.loc_name:
-                            to_find.append(loc)
-                            mygrid.set_location(loc)
-
             for i in range(len(to_find)-1):
                 shortest = WIDTH*HEIGHT
                 for j in range(i+1, len(to_find)):
@@ -134,7 +125,9 @@ def main():
 
         WIN.fill(LGREY)
         mygrid.draw()
-        for button in buttons:
+        for button in loc_buttons:
+            button.draw(WIN)
+        for button in func_buttons:
             button.draw(WIN)
 
         pygame.display.update()
