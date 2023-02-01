@@ -4,7 +4,8 @@ import pygame
 from colors import WHITE, DGREY, DDGREY, DGREEN
 
 class Button:
-    def __init__(self, loc_name, width, height, pos):
+    def __init__(self, loc_name, width, height, pos, bistable):
+        self.bistable = bistable
         self.loc_name = loc_name
         self.color = DGREY
         self.font = pygame.font.Font(None, round(9/10*height))
@@ -34,9 +35,14 @@ class Button:
     def click_detect(self):
         mouse_pos = pygame.mouse.get_pos()
         if self.top_rect.collidepoint(mouse_pos):
+            if not self.bistable:
+                self.pressed = pygame.mouse.get_pressed()[0]
             if(pygame.mouse.get_pressed()[0]):
                 self.mouse_pressed = True
             else:
-                if self.mouse_pressed == True:
-                    self.pressed = not self.pressed
-                    self.mouse_pressed = False
+                if self.bistable:
+                    if self.mouse_pressed == True:
+                        self.pressed = not self.pressed
+                self.mouse_pressed = False
+                
+

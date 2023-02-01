@@ -27,8 +27,8 @@ def main():
     min_spacing = round(const_buttons_height/6) or 1
     const_buttons_y = HEIGHT - const_buttons_height - 4*min_spacing
     
-    find_path_button = Button('Find path', const_buttons_width, const_buttons_height, (GRID_WIDTH+min_spacing,const_buttons_y))
-    reset_button = Button('Reset', const_buttons_width, const_buttons_height, (GRID_WIDTH+const_buttons_width+3*min_spacing,const_buttons_y))
+    find_path_button = Button('Find path', const_buttons_width, const_buttons_height, (GRID_WIDTH+min_spacing,const_buttons_y), bistable=False)
+    reset_button = Button('Reset', const_buttons_width, const_buttons_height, (GRID_WIDTH+const_buttons_width+3*min_spacing,const_buttons_y), bistable=False)
     func_buttons.append(find_path_button)
     func_buttons.append(reset_button)
 
@@ -78,7 +78,7 @@ def main():
     vert_space = round(button_height/3)
 
     for i, loc in enumerate(locations):
-        loc_buttons.append(Button(loc.name, width=BUTTONS_WIDTH-2*min_spacing, height=button_height, pos=(GRID_WIDTH+min_spacing, vert_space+(button_height+vert_space)*i)))
+        loc_buttons.append(Button(loc.name, width=BUTTONS_WIDTH-2*min_spacing, height=button_height, pos=(GRID_WIDTH+min_spacing, vert_space+(button_height+vert_space)*i), bistable=True))
 
     def get_loc_by_name(name, locations):
         for loc in locations:
