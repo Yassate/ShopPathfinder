@@ -28,7 +28,7 @@ class AreaGrid:
         self._grid = self._org_grid.copy()
 
     def draw(self):
-        for y, col in enumerate(self._grid):
+        for y, col in enumerate(self._org_grid):
             for x, row in enumerate(col):
                 pygame.draw.rect(self._window, self._color[abs(row)], pygame.Rect(x*(self.el_w_pix+self.spacing), y*(self.el_h_pix+self.spacing), self.el_w_pix, self.el_h_pix))    
 

@@ -41,25 +41,25 @@ def main():
     # "Reset" causes deselecting of all products and clears the map
     # Usable multiple times
 
-    #TODO NEXT - REFACTOR; it's a mess here
-    #TODO NEXTNEXT - Load list from file 
+    #TODO NEXT1 - locations remains shown after path is found; it doesnt work if loc is set on a shelf
+    #TODO NEXT2 - REFACTOR; it's a mess here
+    #TODO NEXT3 - Load list from file 
 
     locations: List[Location] = []
     locations.append(Location(2, 2, "Tomato"))
     locations.append(Location(15, 5, "Banana"))
-    locations.append(Location(35, 8, "Oil"))
-    locations.append(Location(23, 20, "Potatoes"))
-    locations.append(Location(27, 27, "Carrot"))
-    locations.append(Location(35, 30, "Bread"))
-    locations.append(Location(27, 38, "Beer"))
-    locations.append(Location(5, 39, "Rolls"))
-    locations.append(Location(5, 44, "Wine"))
-    locations.append(Location(15, 48, "MMs"))
-    locations.append(Location(48, 48, "Water"))
+    locations.append(Location(35, 9, "Oil"))
+    locations.append(Location(25, 23, "Potatoes"))
+    locations.append(Location(26, 27, "Carrot"))
+    locations.append(Location(35, 32, "Bread"))
+    locations.append(Location(27, 40, "Beer"))
+    locations.append(Location(4, 40, "Rolls"))
+    locations.append(Location(4, 44, "Wine"))
+    locations.append(Location(14, 47, "MMs"))
+    locations.append(Location(44, 47, "Water"))
 
     button_height = round(0.9*find_path_button.top_rect.topleft[1]/(4/3*len(locations)))
     button_height = min(30, button_height)
-
     vert_space = round(button_height/3)
 
     for i, loc in enumerate(locations):
@@ -76,16 +76,11 @@ def main():
     mygrid.draw()
     pygame.display.update()
 
-    to_find = []
-
-    i = 0
     while run:
         clock.tick(FPS)
 
         for button in loc_buttons:
             loc = get_loc_by_name(button.loc_name, locations)
-            if reset_button.pressed:
-                button.pressed = False
             if button.pressed:
                 if loc not in to_find:
                     to_find.append(loc)
@@ -96,6 +91,7 @@ def main():
                     mygrid.clear_location(loc)
 
         if reset_button.pressed:
+            mygrid.reset_grid()
             for button in loc_buttons:
                 button.pressed = False
 
@@ -116,10 +112,6 @@ def main():
                 mygrid.solve_for_locations(*loc_pair)
             find_path_button.pressed=False
         
-        if reset_button.pressed:
-            mygrid.reset_grid()
-
-
         WIN.fill(LGREY)
         mygrid.draw()
         for button in loc_buttons:
@@ -129,15 +121,9 @@ def main():
 
         pygame.display.update()
 
-        i += 1
-        # mygrid.reset_grid()
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-
-        # if i == len(location_pairs):
-        #     break
 
     pygame.quit()
 
