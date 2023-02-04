@@ -41,23 +41,8 @@ def main():
     # "Reset" causes deselecting of all products and clears the map
     # Usable multiple times
 
-    #TODO NEXT - WORK ON SELECT/DESELECT and RESET BUTTON (stays clicked and doesn't reset other buttons)
-    #TODO NEXTNEXT - REFACTOR; it's a mess here
-    #TODO NEXTNEXTNEXT - Load list from file 
-
-    locations2 = {
-        "Tomato":   Location(2,2),
-        "Banana":   Location(15, 5),
-        "Oil":      Location(35, 8),
-        "Potatoes": Location(23, 20),
-        "Carrot":   Location(27, 27),
-        "Bread":    Location(35, 30),
-        "Beer":     Location(27, 38),
-        "Rolls":    Location(5, 39),
-        "Wine":     Location(5, 44),
-        "MMs":      Location(15, 48),
-        "Water":    Location(48, 48)     
-    }
+    #TODO NEXT - REFACTOR; it's a mess here
+    #TODO NEXTNEXT - Load list from file 
 
     locations: List[Location] = []
     locations.append(Location(2, 2, "Tomato"))
@@ -91,16 +76,28 @@ def main():
     mygrid.draw()
     pygame.display.update()
 
+    to_find = []
+
     i = 0
     while run:
-        to_find = []
         clock.tick(FPS)
 
         for button in loc_buttons:
             loc = get_loc_by_name(button.loc_name, locations)
+            if reset_button.pressed:
+                button.pressed = False
             if button.pressed:
-                to_find.append(loc)
-                mygrid.set_location(loc)
+                if loc not in to_find:
+                    to_find.append(loc)
+                    mygrid.set_location(loc)
+            else:
+                if loc in to_find:
+                    to_find.remove(loc)
+                    mygrid.clear_location(loc)
+
+        if reset_button.pressed:
+            for button in loc_buttons:
+                button.pressed = False
 
         if find_path_button.pressed:
             for i in range(len(to_find)-1):
