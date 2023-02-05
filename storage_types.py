@@ -1,14 +1,16 @@
 from dataclasses import dataclass
 
+
 @dataclass
 class Location:
     x: int
     y: int
     name: str = "viaPoint"
 
+
 @dataclass
 class Path:
-    locations: list[Location]   
+    locations: list[Location]
 
     def set_start_loc(self, start_loc: Location):
         self.locations[0] = start_loc

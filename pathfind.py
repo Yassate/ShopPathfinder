@@ -14,6 +14,7 @@ WIDTH = GRID_WIDTH + BUTTONS_WIDTH
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 FPS = 30
 
+
 def main():
     clock = pygame.time.Clock()
     run = True
@@ -26,12 +27,10 @@ def main():
     const_buttons_height = 0.04*HEIGHT
     min_spacing = round(const_buttons_height/6) or 1
     const_buttons_y = HEIGHT - const_buttons_height - 4*min_spacing
-    
-    find_path_button = Button('Find path', const_buttons_width, const_buttons_height, (GRID_WIDTH+min_spacing,const_buttons_y), bistable=False)
-    reset_button = Button('Reset', const_buttons_width, const_buttons_height, (GRID_WIDTH+const_buttons_width+3*min_spacing,const_buttons_y), bistable=False)
+    find_path_button = Button('Find path', const_buttons_width, const_buttons_height, (GRID_WIDTH+min_spacing, const_buttons_y), bistable=False)
+    reset_button = Button('Reset', const_buttons_width, const_buttons_height, (GRID_WIDTH+const_buttons_width+3*min_spacing, const_buttons_y), bistable=False)
     func_buttons.append(find_path_button)
     func_buttons.append(reset_button)
-
 
     # Acceptance criteria - FLOW:
     # Opening the app - you see the map and on the right side, short list of clickable product names + find path and reset button
@@ -41,9 +40,9 @@ def main():
     # "Reset" causes deselecting of all products and clears the map
     # Usable multiple times
 
-    #TODO NEXT1 - Test? Prep for refactor
-    #TODO NEXT2 - REFACTOR; it's a mess here
-    #TODO NEXT3 - Load list from file 
+    # TODO NEXT1 - Test? Prep for refactor
+    # TODO NEXT2 - REFACTOR; it's a mess here
+    # TODO NEXT3 - Load list from file
 
     locations: List[Location] = []
     locations.append(Location(3, 3, "Tomato"))
@@ -111,7 +110,7 @@ def main():
             for loc_pair in location_pairs:
                 path = mygrid.solve_for_locations(*loc_pair)
                 mygrid.set_path(path)
-            find_path_button.pressed=False
+            find_path_button.pressed = False
         
         WIN.fill(LGREY)
         mygrid.draw()
@@ -127,6 +126,7 @@ def main():
                 run = False
 
     pygame.quit()
+
 
 if __name__ == "__main__":
     main()
