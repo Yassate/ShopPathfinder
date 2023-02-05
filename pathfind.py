@@ -41,13 +41,13 @@ def main():
     # "Reset" causes deselecting of all products and clears the map
     # Usable multiple times
 
-    #TODO NEXT1 - locations remains shown after path is found; it doesnt work if loc is set on a shelf
+    #TODO NEXT1 - Test? Prep for refactor
     #TODO NEXT2 - REFACTOR; it's a mess here
     #TODO NEXT3 - Load list from file 
 
     locations: List[Location] = []
-    locations.append(Location(2, 2, "Tomato"))
-    locations.append(Location(15, 5, "Banana"))
+    locations.append(Location(3, 3, "Tomato"))
+    locations.append(Location(15, 6, "Banana"))
     locations.append(Location(35, 9, "Oil"))
     locations.append(Location(25, 23, "Potatoes"))
     locations.append(Location(26, 27, "Carrot"))
@@ -88,7 +88,7 @@ def main():
             else:
                 if loc in to_find:
                     to_find.remove(loc)
-                    mygrid.clear_location(loc)
+                    mygrid.reset_location(loc)
 
         if reset_button.pressed:
             mygrid.reset_grid()
@@ -109,7 +109,8 @@ def main():
             for i in range(len(to_find)-1):
                 location_pairs.append((to_find[i], to_find[i+1]))
             for loc_pair in location_pairs:
-                mygrid.solve_for_locations(*loc_pair)
+                path = mygrid.solve_for_locations(*loc_pair)
+                mygrid.set_path(path)
             find_path_button.pressed=False
         
         WIN.fill(LGREY)
