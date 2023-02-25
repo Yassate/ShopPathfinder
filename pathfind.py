@@ -41,7 +41,10 @@ def main():
     # Usable multiple times
 
     # TODO NEXT1 - Test? Prep for refactor
-    # TODO NEXT2 - REFACTOR; it's a mess here
+    #            - a_star - dependency injection of file stream-like structure? Then I can create mock with some simple grid
+    #            - then solve_for_locations and shortest() can be testedr
+    #            - create some test for checking if 3 location salesman works
+    # TODO NEXT2 - REFACTOR; it's a mess here; start from abstracting out salesman algorithm
     # TODO NEXT3 - Load list from file
 
     locations: List[Location] = []

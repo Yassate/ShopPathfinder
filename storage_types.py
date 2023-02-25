@@ -12,12 +12,6 @@ class Location:
 class Path:
     locations: list[Location]
 
-    def set_start_loc(self, start_loc: Location):
-        self.locations[0] = start_loc
-
-    def set_target_loc(self, target_loc: Location):
-        self.locations[-1] = target_loc
-
     def length(self) -> int:
         return len(self.locations)
 

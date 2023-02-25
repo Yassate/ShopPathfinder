@@ -52,18 +52,16 @@ class AreaGrid:
                 color = DGREY if row == 90 else self._color[abs(row)]
                 pygame.draw.rect(WIN, color, pygame.Rect(x*(self.el_w_pix+self.spacing), y*(self.el_h_pix+self.spacing), self.el_w_pix, self.el_h_pix))
 
-    def solve_for_locations(self, loc1: Location, loc2: Location) -> Path:
-        if cached_path:= self._check_for_cached_solution(loc1, loc2):
+    def solve_for_locations(self, start_loc: Location, target_loc: Location) -> Path:
+        if cached_path:= self._check_for_cached_solution(start_loc, target_loc):
             return cached_path
         else:
             grid = Grid(matrix=self._org_grid)
-            start = grid.node(loc1.x, loc1.y)
-            end = grid.node(loc2.x, loc2.y)
+            start = grid.node(start_loc.x, start_loc.y)
+            end = grid.node(target_loc.x, target_loc.y)
             finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
             path, _ = finder.find_path(start, end, grid)
-            cur_path = Path([Location(p[0], p[1]) for p in path])
-            cur_path.set_start_loc(loc1)
-            cur_path.set_target_loc(loc2)
+            cur_path = Path([start_loc] + [Location(p[0], p[1]) for p in path[1:-1]] + [target_loc])
             self._cached_paths.append(cur_path)
             return cur_path
 
