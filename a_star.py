@@ -10,8 +10,7 @@ from colors import LGREY, DGREY, GREEN, RED
 class AreaGrid:
     _color = [DGREY, LGREY, GREEN, RED]
 
-    def __init__(self, win, filepath="", wh_pix=(500, 500), cover=1, spacing=1):
-        self._window = win
+    def __init__(self, filepath: str = "", wh_pix: tuple[int, int] = (500, 500), cover: int = 1, spacing: int = 1):
         self._grid = self._load_data_from_file(filepath)
         self._org_grid = self._grid.copy()
         self.shape = self._grid.shape
@@ -27,33 +26,33 @@ class AreaGrid:
         loaded[loaded == 0] = 90
         return loaded
 
-    def _check_for_cached_solution(self, loc1, loc2):
+    def _check_for_cached_solution(self, loc1: Location, loc2: Location) -> Path:
         for path in self._cached_paths:
             if path.is_between_points(loc1, loc2):
                 return path
 
-    def set_path(self, path):
+    def set_path(self, path: Path):
         self._path = path
         for location in path.locations[1:-1]:
             self._grid.itemset((location.y, location.x), -2)
 
-    def set_location(self, location):
+    def set_location(self, location: Location):
         self._grid.itemset((location.y, location.x), 3)
 
-    def reset_location(self, location):
+    def reset_location(self, location: Location):
         val = self._org_grid.item((location.y, location.x))
         self._grid.itemset((location.y, location.x), val)
 
     def reset_grid(self):
         self._grid = self._org_grid.copy()
 
-    def draw(self):
+    def draw(self, WIN: pygame.Surface):
         for y, col in enumerate(self._grid):
             for x, row in enumerate(col):
                 color = DGREY if row == 90 else self._color[abs(row)]
-                pygame.draw.rect(self._window, color, pygame.Rect(x*(self.el_w_pix+self.spacing), y*(self.el_h_pix+self.spacing), self.el_w_pix, self.el_h_pix))
+                pygame.draw.rect(WIN, color, pygame.Rect(x*(self.el_w_pix+self.spacing), y*(self.el_h_pix+self.spacing), self.el_w_pix, self.el_h_pix))
 
-    def solve_for_locations(self, loc1, loc2):
+    def solve_for_locations(self, loc1: Location, loc2: Location) -> Path:
         if cached_path:= self._check_for_cached_solution(loc1, loc2):
             cur_path = cached_path
         else:

@@ -21,7 +21,7 @@ def main():
     pygame.font.init()
     loc_buttons = []
     func_buttons = []
-    mygrid = AreaGrid(win=WIN, filepath="input_files/obstacles.txt", wh_pix=(GRID_WIDTH, HEIGHT))
+    mygrid = AreaGrid(filepath="input_files/obstacles.txt", wh_pix=(GRID_WIDTH, HEIGHT))
 
     const_buttons_width = 0.9*BUTTONS_WIDTH/2
     const_buttons_height = 0.04*HEIGHT
@@ -71,10 +71,6 @@ def main():
 
     to_find: List[Location] = []
 
-    WIN.fill(LGREY)
-    mygrid.draw()
-    pygame.display.update()
-
     while run:
         clock.tick(FPS)
 
@@ -113,10 +109,8 @@ def main():
             find_path_button.pressed = False
         
         WIN.fill(LGREY)
-        mygrid.draw()
-        for button in loc_buttons:
-            button.draw(WIN)
-        for button in func_buttons:
+        mygrid.draw(WIN)
+        for button in (loc_buttons + func_buttons):
             button.draw(WIN)
 
         pygame.display.update()
