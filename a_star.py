@@ -54,7 +54,7 @@ class AreaGrid:
 
     def solve_for_locations(self, loc1: Location, loc2: Location) -> Path:
         if cached_path:= self._check_for_cached_solution(loc1, loc2):
-            cur_path = cached_path
+            return cached_path
         else:
             grid = Grid(matrix=self._org_grid)
             start = grid.node(loc1.x, loc1.y)
@@ -65,8 +65,8 @@ class AreaGrid:
             cur_path.set_start_loc(loc1)
             cur_path.set_target_loc(loc2)
             self._cached_paths.append(cur_path)
-        return cur_path
+            return cur_path
 
-    def get_shortest_length_between_locations(self, loc1, loc2) -> int:
+    def get_shortest_length_between_locations(self, loc1: Location, loc2: Location) -> int:
         path = self.solve_for_locations(loc1, loc2)
         return path.length()

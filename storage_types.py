@@ -1,11 +1,11 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
-@dataclass
+@dataclass(frozen=True)
 class Location:
-    x: int
-    y: int
-    name: str = "viaPoint"
+    x: int = field(compare=True)
+    y: int = field(compare=True)
+    name: str = field(compare=False, default_factory=lambda: "viaPoint")
 
 
 @dataclass
@@ -21,8 +21,7 @@ class Path:
     def length(self) -> int:
         return len(self.locations)
 
-    def is_between_points(self, pt1, pt2) -> bool:
+    def is_between_points(self, loc1: Location, loc2: Location) -> bool:
         pos_start = self.locations[0]
         pos_end = self.locations[-1]
-        # print(f"Pt1: {pt1}, Pt2: {pt2}, Pos start: {pos_start}, pos end: {pos_end}")
-        return ((pos_start == pt1 and pos_end == pt2) or (pos_start == pt2 and pos_end == pt1))
+        return ((pos_start == loc1 and pos_end == loc2) or (pos_start == loc2 and pos_end == loc1))
