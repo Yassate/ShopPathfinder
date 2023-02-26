@@ -1,5 +1,5 @@
 import pygame
-from colors import WHITE, DGREY, DDGREY, DGREEN
+from ui.colors import WHITE, DGREY, DDGREY, DGREEN
 
 class Button:
     def __init__(self, loc_name: str, width: int, height: int, pos: tuple[int, int], bistable: bool):

@@ -1,10 +1,9 @@
 from os import environ
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 import pygame
-from a_star import AreaGrid
 from storage_types import Location
-from button import Button
-from colors import LGREY
+from ui import AreaGrid, Button
+from ui.colors import LGREY
 from typing import List
 
 HEIGHT = 750
@@ -94,21 +93,7 @@ def main():
                 button.pressed = False
 
         if find_path_button.pressed:
-            for i in range(len(to_find)-1):
-                shortest = WIDTH*HEIGHT
-                for j in range(i+1, len(to_find)):
-                    dist = mygrid.get_shortest_length_between_locations(to_find[i], to_find[j])
-                    if dist < shortest:
-                        shortest = dist
-                        nearest_p = to_find[j]
-                to_find.remove(nearest_p)
-                to_find.insert(i+1, nearest_p)
-            location_pairs = []
-            for i in range(len(to_find)-1):
-                location_pairs.append((to_find[i], to_find[i+1]))
-            for loc_pair in location_pairs:
-                path = mygrid.solve_for_locations(*loc_pair)
-                mygrid.set_path(path)
+            exec_salesman(mygrid, to_find)
             find_path_button.pressed = False
         
         WIN.fill(LGREY)
@@ -123,6 +108,23 @@ def main():
                 run = False
 
     pygame.quit()
+
+def exec_salesman(mygrid, to_find):
+    for i in range(len(to_find)-1):
+        shortest = WIDTH*HEIGHT
+        for j in range(i+1, len(to_find)):
+            dist = mygrid.get_shortest_length_between_locations(to_find[i], to_find[j])
+            if dist < shortest:
+                shortest = dist
+                nearest_p = to_find[j]
+        to_find.remove(nearest_p)
+        to_find.insert(i+1, nearest_p)
+    location_pairs = []
+    for i in range(len(to_find)-1):
+        location_pairs.append((to_find[i], to_find[i+1]))
+    for loc_pair in location_pairs:
+        path = mygrid.solve_for_locations(*loc_pair)
+        mygrid.set_path(path)
 
 
 if __name__ == "__main__":
