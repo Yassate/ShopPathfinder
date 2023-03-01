@@ -5,6 +5,7 @@ from storage_types import Location
 from ui import AreaGrid, Button
 from ui.colors import LGREY
 from typing import List
+from salesman import TrivialTSP
 
 HEIGHT = 750
 GRID_WIDTH = HEIGHT
@@ -34,7 +35,7 @@ def main():
     # Acceptance criteria - FLOW:
     # Opening the app - you see the map and on the right side, short list of clickable product names + find path and reset button
     # List loadable from file, paths to file and map can be hardcoded/parameter of main or taken from script folder
-    # After clicking the product it remains selected, until it's deselected. Both action causes to mark and unmark location on the map
+    # After clicking the aproduct it remains selected, until it's deselected. Both action causes to mark and unmark location on the map
     # "Find Path" triggers algorithm and shows path on the map
     # "Reset" causes deselecting of all products and clears the map
     # Usable multiple times
@@ -67,7 +68,7 @@ def main():
             if loc.name == name:
                 return loc
 
-    to_find: List[Location] = []
+    to_find: list[Location] = []
 
     while run:
         clock.tick(FPS)
@@ -89,7 +90,14 @@ def main():
                 button.pressed = False
 
         if find_path_button.pressed:
-            exec_salesman(mygrid, to_find)
+            tsp = TrivialTSP(mygrid.get_shortest_length_between_locations, WIDTH*HEIGHT)
+            solved = tsp.solve(to_find)
+            location_pairs = []
+            for i in range(len(solved)-1):
+                location_pairs.append((solved[i], solved[i+1]))
+            for loc_pair in location_pairs:
+                path = mygrid.solve_for_locations(*loc_pair)
+                mygrid.set_path(path)
             find_path_button.pressed = False
         
         WIN.fill(LGREY)
@@ -104,23 +112,6 @@ def main():
                 run = False
 
     pygame.quit()
-
-def exec_salesman(mygrid, to_find):
-    for i in range(len(to_find)-1):
-        shortest = WIDTH*HEIGHT
-        for j in range(i+1, len(to_find)):
-            dist = mygrid.get_shortest_length_between_locations(to_find[i], to_find[j])
-            if dist < shortest:
-                shortest = dist
-                nearest_p = to_find[j]
-        to_find.remove(nearest_p)
-        to_find.insert(i+1, nearest_p)
-    location_pairs = []
-    for i in range(len(to_find)-1):
-        location_pairs.append((to_find[i], to_find[i+1]))
-    for loc_pair in location_pairs:
-        path = mygrid.solve_for_locations(*loc_pair)
-        mygrid.set_path(path)
 
 
 if __name__ == "__main__":
