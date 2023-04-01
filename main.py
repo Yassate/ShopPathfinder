@@ -5,7 +5,8 @@ from storage_types import Location
 from ui import AreaGrid, Button
 from ui.colors import LGREY
 from typing import List
-from salesman import TrivialTSP
+from tsp import TrivialTSP
+from astar import AStarSolver
 
 HEIGHT = 750
 GRID_WIDTH = HEIGHT
@@ -13,7 +14,6 @@ BUTTONS_WIDTH = round(1/4*GRID_WIDTH)
 WIDTH = GRID_WIDTH + BUTTONS_WIDTH
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 FPS = 30
-
 
 def main():
     clock = pygame.time.Clock()
@@ -40,7 +40,8 @@ def main():
     # "Reset" causes deselecting of all products and clears the map
     # Usable multiple times
 
-    # TODO NEXT1 - add more tests
+    # TODO NEXT0 - package tests with algorithms - salesman and pathfinder
+    # TODO NEXT1 - move pathfinder from mygrid to separate package
     # TODO NEXT2 - refactor
     # TODO NEXT3 - Load list from file
 
@@ -91,13 +92,14 @@ def main():
                 button.pressed = False
 
         if find_path_button.pressed:
-            tsp = TrivialTSP(mygrid.get_shortest_length_between_locations, WIDTH*HEIGHT)
+            astar = AStarSolver(mygrid.get_org_grid())
+            tsp = TrivialTSP(astar.get_shortest_length_between_locations, WIDTH*HEIGHT)
             solved = tsp.solve(to_find)
             location_pairs = []
             for i in range(len(solved)-1):
                 location_pairs.append((solved[i], solved[i+1]))
             for loc_pair in location_pairs:
-                path = mygrid.solve_for_locations(*loc_pair)
+                path = astar.solve_for_locations(*loc_pair)
                 mygrid.set_path(path)
             find_path_button.pressed = False
         
