@@ -40,8 +40,7 @@ def main():
     # "Reset" causes deselecting of all products and clears the map
     # Usable multiple times
 
-    # TODO NEXT0 - package tests with algorithms - salesman and pathfinder
-    # TODO NEXT1 - move pathfinder from mygrid to separate package
+    # TODO NEXT1 - make test run
     # TODO NEXT2 - refactor
     # TODO NEXT3 - Load list from file
 
