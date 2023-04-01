@@ -40,9 +40,9 @@ def main():
     # "Reset" causes deselecting of all products and clears the map
     # Usable multiple times
 
-    # TODO NEXT1 - make test run
-    # TODO NEXT2 - refactor
-    # TODO NEXT3 - Load list from file
+    # TODO NEXT1 - check if refactor needed
+    # TODO NEXT2 - Load list from file
+    # TODO NEXT3 - docu?
 
     locations: List[Location] = []
     locations.append(Location(3, 3, "Tomato"))
