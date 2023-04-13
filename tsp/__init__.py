@@ -1,0 +1,1 @@
+from .tsp_trivial import TrivialTSP

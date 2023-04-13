@@ -1,72 +1,116 @@
+from os import environ
+environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 import pygame
-import random
-import numpy as np
+from storage_types import Location
+from ui import AreaGrid, Button
+from ui.colors import LGREY
+from tsp import TrivialTSP
+from astar import AStarSolver
+import csv
 
-def draw_cities(cities):
-    for city in cities:
-        pygame.draw.circle(surface=WIN, color=RED, center=city, radius=5)
+HEIGHT = 750
+GRID_WIDTH = HEIGHT
+BUTTONS_WIDTH = round(1/4*GRID_WIDTH)
+WIDTH = GRID_WIDTH + BUTTONS_WIDTH
+CONST_BUTTON_W = 0.9*BUTTONS_WIDTH/2
+CONST_BUTTON_H = 0.04*HEIGHT
+MIN_SPACING = round(CONST_BUTTON_H/6) or 1
+CONST_BUTTONS_Y = HEIGHT - CONST_BUTTON_H - 4*MIN_SPACING
 
-def draw_lines_between_cities(cities):
-    for i in range(len(cities)-1):
-        pygame.draw.line(surface=WIN, color=RED, start_pos=cities[i], end_pos=cities[i+1], width=3)
-
-
-def calc_dist(p1, p2):
-    return np.sqrt((abs(p1[0]-p2[0])**2 + abs(p1[1]-p2[1])**2))
-
-def calc_whole_dist(cities):
-    sum = 0
-    for i in range(len(cities)-1):
-        sum += calc_dist(cities[i], cities[i+1])
-    return sum 
-
-WIDTH, HEIGHT = 800, 800
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-WHITE = (255, 255, 255)
-RED = (255, 30, 70)
-FPS = 60
-cities_count = 30
-cities = []
+FPS = 30
 
-for i in range(cities_count):
-    city = random.randint(0,WIDTH), random.randint(0,HEIGHT)
-    cities.append(city)
+# Acceptance criteria - FLOW:
+# Opening the app - you see the map and on the right side, short list of clickable product names + find path and reset button
+# List loadable from file, paths to file and map can be hardcoded/parameter of main or taken from script folder
+# After clicking the aproduct it remains selected, until it's deselected. Both action causes to mark and unmark location on the map
+# "Find Path" triggers algorithm and shows path on the map
+# "Reset" causes deselecting of all products and clears the map
+# Usable multiple times
 
-def salesman_solution(cities):
-    for i in range(len(cities)-1):
-        shortest = WIDTH+HEIGHT
-        for j in range(i+1, len(cities)):
-            dist = calc_dist(cities[i], cities[j])
-            if dist < shortest:
-                #print(dist)
-                shortest = dist
-                nearest_p = cities[j]
-        cities.remove(nearest_p)
-        cities.insert(i+1, nearest_p)
-        pygame.time.wait(200)
-        draw_window()
-        #print(cities)
-        #print(calc_whole_dist(cities))
-
-
-def draw_window():
-    WIN.fill(WHITE)
-    draw_cities(cities)
-    draw_lines_between_cities(cities)
-    pygame.display.update()
+# TODO NEXT1 - docu?
 
 def main():
+    pygame.font.init()
+
+    find_path_button, reset_button = init_func_buttons()
+    locations = read_locations("input_files/locations.csv")
+    loc_buttons = init_loc_buttons(locations, find_path_button.top_rect.topleft[1])
+
+    ui_grid = AreaGrid(filepath="input_files/obstacles.txt", wh_pix=(GRID_WIDTH, HEIGHT))
     clock = pygame.time.Clock()
-    run = True
-    salesman_solution(cities)
-    while run:
-        #clock.tick(FPS)
+    to_find: list[Location] = []
+
+    while True:
+        clock.tick(FPS)
+
+        for button in loc_buttons:
+            loc = get_loc_by_name(button.loc_name, locations)
+            if button.pressed:
+                if loc not in to_find:
+                    to_find.append(loc)
+                    ui_grid.set_location(loc)
+            else:
+                if loc in to_find:
+                    to_find.remove(loc)
+                    ui_grid.reset_location(loc)
+
+        if reset_button.pressed:
+            ui_grid.reset()
+            for button in loc_buttons:
+                button.pressed = False
+
+        if find_path_button.pressed:
+            astar = AStarSolver(ui_grid.get_org_grid())
+            tsp = TrivialTSP(astar.get_shortest_length_between_locations, WIDTH*HEIGHT)
+            solved = tsp.solve(to_find)
+            location_pairs = []
+            for i in range(len(solved)-1):
+                location_pairs.append((solved[i], solved[i+1]))
+            for loc_pair in location_pairs:
+                path = astar.solve_for_locations(*loc_pair)
+                ui_grid.set_path(path)
+            find_path_button.pressed = False
+        
+        WIN.fill(LGREY)
+        ui_grid.draw(WIN)
+        for button in (loc_buttons + [find_path_button, reset_button]):
+            button.draw(WIN)
+
+        pygame.display.update()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
-        #draw_window()
+                pygame.quit()
+                break
 
-    pygame.quit()
+def read_locations(path):
+    locations = []
+    with open(path) as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        next(reader)
+        for row in reader:
+            locations.append(Location(int(row[1]), int(row[2]), row[0]))
+    return locations
+
+def init_loc_buttons(locations, func_buttons_top_left):
+    loc_buttons = []
+    loc_button_h = round(0.9*func_buttons_top_left/(4/3*len(locations)))
+    loc_button_h = min(30, loc_button_h)
+    vert_space = round(loc_button_h/3)
+    for i, loc in enumerate(locations):
+        loc_buttons.append(Button(loc.name, width=BUTTONS_WIDTH-2*MIN_SPACING, height=loc_button_h, pos=(GRID_WIDTH+MIN_SPACING, vert_space+(loc_button_h+vert_space)*i), bistable=True))
+    return loc_buttons
+
+def init_func_buttons():
+    find_path_button = Button('Find path', CONST_BUTTON_W, CONST_BUTTON_H, (GRID_WIDTH+MIN_SPACING, CONST_BUTTONS_Y), bistable=False)
+    reset_button = Button('Reset', CONST_BUTTON_W, CONST_BUTTON_H, (GRID_WIDTH+CONST_BUTTON_W+3*MIN_SPACING, CONST_BUTTONS_Y), bistable=False)
+    return find_path_button,reset_button
+
+def get_loc_by_name(name, locations):
+    for loc in locations:
+        if loc.name == name:
+            return loc
 
 if __name__ == "__main__":
     main()
