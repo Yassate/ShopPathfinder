@@ -20,16 +20,6 @@ CONST_BUTTONS_Y = HEIGHT - CONST_BUTTON_H - 4*MIN_SPACING
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 FPS = 30
 
-# Acceptance criteria - FLOW:
-# Opening the app - you see the map and on the right side, short list of clickable product names + find path and reset button
-# List loadable from file, paths to file and map can be hardcoded/parameter of main or taken from script folder
-# After clicking the aproduct it remains selected, until it's deselected. Both action causes to mark and unmark location on the map
-# "Find Path" triggers algorithm and shows path on the map
-# "Reset" causes deselecting of all products and clears the map
-# Usable multiple times
-
-# TODO NEXT1 - docu?
-
 def main():
     pygame.font.init()
 
