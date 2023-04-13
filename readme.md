@@ -22,7 +22,7 @@ First selected location is start of the path
 Next locations show up on the map accordingly
 </br><img src="https://user-images.githubusercontent.com/32523464/231806719-6526b80b-af05-4b76-a111-cf2a13b51fb9.PNG" width="50%" height="50%"/></br>
 *Find path* button draws *"shortest"* path between chosen locations, it's suboptimal solution -> see trivial TSP algorithm mentioned above
-<img src="https://user-images.githubusercontent.com/32523464/231804464-2b26df4e-2ba6-4abd-a1fd-dbc61a31c14d.PNG" width="50%" height="50%"/>
+</br><img src="https://user-images.githubusercontent.com/32523464/231804464-2b26df4e-2ba6-4abd-a1fd-dbc61a31c14d.PNG" width="50%" height="50%"/>
 
 
 ## Possible next steps
