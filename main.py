@@ -32,9 +32,9 @@ FPS = 30
 
 def main():
     pygame.font.init()
-    locations = read_locations("input_files/locations.csv")
 
     find_path_button, reset_button = init_func_buttons()
+    locations = read_locations("input_files/locations.csv")
     loc_buttons = init_loc_buttons(locations, find_path_button.top_rect.topleft[1])
 
     ui_grid = AreaGrid(filepath="input_files/obstacles.txt", wh_pix=(GRID_WIDTH, HEIGHT))
