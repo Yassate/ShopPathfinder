@@ -1,9 +1,5 @@
 import numpy as np
 import pygame
-from pathfinding.core.diagonal_movement import DiagonalMovement
-from pathfinding.core.grid import Grid
-from pathfinding.finder.a_star import AStarFinder
-from storage_types import Location, Path
 from storage_types import Location, Path
 from ui.colors import LGREY, DGREY, GREEN, RED
 
@@ -20,7 +16,6 @@ class AreaGrid:
         self.el_w_pix = np.floor(wh_pix[0]*self.cover/self.shape[0])-self.spacing
         self.el_h_pix = np.floor(wh_pix[1]*self.cover/self.shape[1])-self.spacing
         self._path: Path
-        self._cached_paths: list[Path] = []
 
     def _load_data_from_file(self, filepath: str) -> np.ndarray:
         loaded = np.genfromtxt(filepath, delimiter=" ", dtype=np.int8, filling_values=1)
@@ -39,7 +34,7 @@ class AreaGrid:
         val = self._org_grid.item((location.y, location.x))
         self._grid.itemset((location.y, location.x), val)
 
-    def reset_grid(self):
+    def reset(self):
         self._grid = self._org_grid.copy()
 
     def get_org_grid(self):
